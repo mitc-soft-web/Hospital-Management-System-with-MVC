@@ -1,4 +1,6 @@
-﻿namespace HMS.Models.Entities
+﻿using HMS.Models.Contracts;
+
+namespace HMS.Models.Entities
 {
     public class UserRole : BaseEntity
     {
