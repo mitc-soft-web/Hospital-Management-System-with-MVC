@@ -19,7 +19,7 @@ namespace HMS.Persistence.Context
                 .HasOne(a => a.User)
                 .WithOne(u => u.Admin)
                 .HasForeignKey<Admin>(a => a.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
                         SeedAdminData(builder);
 
 
