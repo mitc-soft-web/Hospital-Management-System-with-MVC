@@ -1,6 +1,9 @@
-﻿namespace HMS.Models.Enums
+﻿using System.Text.Json.Serialization;
+
+namespace HMS.Models.Enums
 {
-    public enum Gender
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum Gender : byte
     {
         Male = 1,
         Female

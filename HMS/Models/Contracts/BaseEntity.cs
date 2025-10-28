@@ -1,4 +1,5 @@
-﻿using HMS.Models.Enums;
+﻿using HMS.Models.Entities;
+using HMS.Models.Enums;
 using MassTransit;
 
 namespace HMS.Models.Contracts

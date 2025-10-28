@@ -3,7 +3,7 @@ using HMS.Models.Enums;
 
 namespace HMS.Models.Entities
 {
-    public class Patient : BaseEntity
+    public class Patient : BaseUser
     {
         public string MedicalRecordNumber { get; set; }
         public Guid UserId { get; set; }

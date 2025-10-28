@@ -3,7 +3,7 @@ using HMS.Models.Enums;
 
 namespace HMS.Models.Entities
 {
-    public class Doctor : BaseEntity
+    public class Doctor : BaseUser
     {
         
         public int YearsOfExperience { get; set; }

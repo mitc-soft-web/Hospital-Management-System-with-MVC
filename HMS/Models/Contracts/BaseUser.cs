@@ -1,8 +1,8 @@
 ﻿using HMS.Models.Enums;
 
-namespace HMS.Models.Entities
+namespace HMS.Models.Contracts
 {
-    public interface IBaseUser
+    public abstract class BaseUser : BaseEntity
     {
         public DateTime DateOfBirth { get; set; }
         public string FirstName { get; set; }

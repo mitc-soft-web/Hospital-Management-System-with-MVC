@@ -1,7 +1,17 @@
+using HMS.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add Database
+builder.Services.AddDbContext<HmsContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
+        new MySqlServerVersion(new Version(9, 0, 0))
+    ));
+
 
 var app = builder.Build();
 
