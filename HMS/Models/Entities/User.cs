@@ -1,4 +1,5 @@
-﻿using HMS.Models.Contracts;
+﻿using FluentValidation;
+using HMS.Models.Contracts;
 
 namespace HMS.Models.Entities
 {
@@ -29,4 +30,6 @@ namespace HMS.Models.Entities
             return PasswordHash;
         }
     }
+
+    
 }

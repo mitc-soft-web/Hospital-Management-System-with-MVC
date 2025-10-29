@@ -1,7 +1,6 @@
 ﻿using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace HMS.Persistence.Context
 {
@@ -22,11 +21,13 @@ namespace HMS.Persistence.Context
                 .OnDelete(DeleteBehavior.Restrict);
                         SeedAdminData(builder);
 
+                        SeedRoleData(builder);
+
 
                     builder.Entity<UserRole>()
-                .HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
-                .HasForeignKey(ur => ur.UserId);
+                        .HasOne(ur => ur.User)
+                        .WithMany(u => u.UserRoles)
+                        .HasForeignKey(ur => ur.UserId);
 
                     builder.Entity<UserRole>()
                         .HasOne(ur => ur.Role)
@@ -133,6 +134,29 @@ namespace HMS.Persistence.Context
             modelBuilder.Entity<Admin>().HasData(adminProfile);
             modelBuilder.Entity<User>().HasData(adminUser);
             modelBuilder.Entity<UserRole>().HasData(userRole);
+        }
+
+        private void SeedRoleData(ModelBuilder modelBuilder)
+        {
+            var roles = new List<Role>
+            {
+                new Role
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Doctor",
+                    Description = "Can manage appointments and patient records",
+                    DateCreated = DateTime.UtcNow,
+                },
+                new Role
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Patient",
+                    Description = "Can view appointments",
+                    DateCreated = DateTime.UtcNow,
+                }
+            };
+
+            modelBuilder.Entity<Role>().HasData(roles);
         }
 
 
