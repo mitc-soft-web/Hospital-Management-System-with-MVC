@@ -1,16 +1,53 @@
 using HMS.Persistence.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.Scan(scan => scan
+    .FromApplicationDependencies(a => a.FullName!.StartsWith("HMS"))
+    .AddClasses(c => c.Where(t => t.Name.EndsWith("Service")))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime()
+    .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")))
+        .AsImplementedInterfaces()
+        .WithScopedLifetime());
+
+
 // Add Database
 builder.Services.AddDbContext<HmsContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
         new MySqlServerVersion(new Version(9, 0, 0))
     ));
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        //ValidIssuer = builder.Configuration["JwtTokenSettings:TokenIssuer"],
+        //ValidAudience = builder.Configuration["JwtTokenSettings:TokenIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtTokenSettings:TokenKey"]))
+    };
+    options.RequireHttpsMetadata = false;
+});
+builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(3));
 
 
 var app = builder.Build();
@@ -26,6 +63,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

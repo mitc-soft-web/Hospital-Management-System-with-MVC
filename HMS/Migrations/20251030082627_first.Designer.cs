@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.Migrations
 {
     [DbContext(typeof(HmsContext))]
-    [Migration("20251029100527_first")]
+    [Migration("20251030082627_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -72,16 +72,16 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("bc143169-3583-4471-afe2-463260178804"),
+                            Id = new Guid("159c89d0-efae-4a00-bbfc-47d392cc0bcd"),
                             Address = "Lagos State",
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 438, DateTimeKind.Utc).AddTicks(706),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 136, DateTimeKind.Utc).AddTicks(1396),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateOfBirth = new DateTime(1994, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Admin",
                             Gender = (byte)1,
                             LastName = "Hms",
                             PhoneNumber = "+23470456780",
-                            UserId = new Guid("72c7f818-ff0d-44e0-a279-ba0590cf4a5c")
+                            UserId = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7")
                         });
                 });
 
@@ -329,24 +329,24 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("924cf6e2-706b-493e-87e4-a97272a6928e"),
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 294, DateTimeKind.Utc).AddTicks(4325),
+                            Id = new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(2457),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Has full permissions",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("b2ab28bf-2c46-439d-9053-990c92d00ea5"),
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 439, DateTimeKind.Utc).AddTicks(6545),
+                            Id = new Guid("0709b44c-f48f-40ee-bf9d-fb61cb1c84b1"),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2197),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Can manage appointments and patient records",
                             Name = "Doctor"
                         },
                         new
                         {
-                            Id = new Guid("7382deec-abd9-4120-a625-c879a1e4e25d"),
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 439, DateTimeKind.Utc).AddTicks(6571),
+                            Id = new Guid("7ef7ee19-cacf-4ee8-82af-6f69d942eaf4"),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2273),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Can view appointments",
                             Name = "Patient"
@@ -423,14 +423,14 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("72c7f818-ff0d-44e0-a279-ba0590cf4a5c"),
+                            Id = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7"),
                             AdminId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 294, DateTimeKind.Utc).AddTicks(7332),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(5566),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DoctorId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "Admin001@gmail.com",
                             EmailConfirmed = true,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDcUavLxpd3k+0xvSwYsZWD+DjlYgkvw03jPPC16rkX6/APAyLcLE6C+BdXe+Z+fIQ=="
+                            PasswordHash = "AQAAAAIAAYagAAAAELoM2b0gICs1ZHTm9JOXgAjGAGWZRhOdNZytRZiJZziMJCGK6/Rzksk85CFWHe6Zyw=="
                         });
                 });
 
@@ -463,11 +463,11 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a03ab6e9-5ccf-4d0c-937c-9664e736f5a9"),
-                            DateCreated = new DateTime(2025, 10, 29, 10, 5, 25, 437, DateTimeKind.Utc).AddTicks(6520),
+                            Id = new Guid("5273c2b4-c98c-4466-8cf1-6a539ef47f16"),
+                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 135, DateTimeKind.Utc).AddTicks(6596),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RoleId = new Guid("924cf6e2-706b-493e-87e4-a97272a6928e"),
-                            UserId = new Guid("72c7f818-ff0d-44e0-a279-ba0590cf4a5c")
+                            RoleId = new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"),
+                            UserId = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7")
                         });
                 });
 

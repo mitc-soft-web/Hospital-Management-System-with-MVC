@@ -1,4 +1,4 @@
-﻿namespace HMS.Interfaces
+﻿namespace HMS.Interfaces.Repositories
 {
     public interface IUnitOfWork
     {

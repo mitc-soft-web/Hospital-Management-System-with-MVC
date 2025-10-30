@@ -1,10 +1,10 @@
-﻿using HMS.Interfaces;
+﻿using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
 using HMS.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace HMS.Implementation
+namespace HMS.Implementation.Repositories
 {
     public class UserRespository : BaseRespository, IUserRepository
     {
@@ -19,6 +19,15 @@ namespace HMS.Implementation
                 .AsNoTracking()
                 .ToListAsync();
          
+        }
+
+        public async Task<User> GetUserAndRoles(Guid userId)
+        {
+            return await _hmsContext.Set<User>()
+               .Where(u => u.Id == userId)
+               .Include(u => u.UserRoles)
+               .ThenInclude(u => u.Role)
+               .SingleOrDefaultAsync();
         }
     }
 

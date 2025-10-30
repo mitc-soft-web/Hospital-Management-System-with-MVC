@@ -1,7 +1,7 @@
 ﻿using HMS.Models.Contracts;
 using System.Linq.Expressions;
 
-namespace HMS.Interfaces
+namespace HMS.Interfaces.Repositories
 {
     public interface IBaseRepository
     {
@@ -11,5 +11,6 @@ namespace HMS.Interfaces
         Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : BaseEntity;
         Task<IReadOnlyList<T>> GetAll<T>() where T : BaseEntity;
         IQueryable<T> QueryWhere<T>(Expression<Func<T, bool>> expression) where T : BaseEntity;
+        
     }
 }

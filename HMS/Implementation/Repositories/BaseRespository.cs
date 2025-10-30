@@ -1,10 +1,10 @@
-﻿using HMS.Interfaces;
+﻿using HMS.Interfaces.Repositories;
 using HMS.Models.Contracts;
 using HMS.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace HMS.Implementation
+namespace HMS.Implementation.Repositories
 {
     public class BaseRespository : IBaseRepository
     {
@@ -13,7 +13,7 @@ namespace HMS.Implementation
         {
             _hmsContext = hmsContext ?? throw new ArgumentNullException(nameof(hmsContext));
         }
-        public virtual void Add<T>(T entity) where T : BaseEntity => _hmsContext.Add<T>(entity);
+        public virtual void Add<T>(T entity) where T : BaseEntity => _hmsContext.Add(entity);
         
         public virtual void Delete<T>(T entity) where T : BaseEntity
         {

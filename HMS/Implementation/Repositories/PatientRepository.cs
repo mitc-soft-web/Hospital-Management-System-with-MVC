@@ -1,7 +1,7 @@
-﻿using HMS.Interfaces;
+﻿using HMS.Interfaces.Repositories;
 using HMS.Persistence.Context;
 
-namespace HMS.Implementation
+namespace HMS.Implementation.Repositories
 {
     public class PatientRepository : BaseRespository, IPatientRepository
     {

@@ -1,6 +1,6 @@
 ﻿using HMS.Models.Entities;
 
-namespace HMS.Interfaces
+namespace HMS.Interfaces.Repositories
 {
     public interface IDoctorRepository : IBaseRepository
     {
