@@ -1,14 +1,17 @@
-﻿using HMS.Contracts.Entities;
-using HMS.Models.Enums;
+﻿using HMS.Models.Enums;
+using MassTransit;
 
-namespace HMS.Models.Entities
+namespace HMS.Models.DTOs.Appointment
 {
-    public class Appointment : BaseEntity
+    public class AppointmentDto
     {
+        public Guid Id { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime DateModified { get; set; }
         public Guid PatientId { get; set; }
-        public Patient Patient { get; set; }
+        public Entities.Patient Patient { get; set; }
         public Guid DoctorId { get; set; }
-        public Doctor Doctor { get; set; }
+        public Entities.Doctor Doctor { get; set; }
 
         public string Title { get; set; }
         public string Description { get; set; }

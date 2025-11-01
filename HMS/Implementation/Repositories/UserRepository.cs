@@ -6,10 +6,17 @@ using System.Linq.Expressions;
 
 namespace HMS.Implementation.Repositories
 {
-    public class UserRespository : BaseRespository, IUserRepository
+    public class UserRepository : BaseRespository, IUserRepository
     {
-        public UserRespository(HmsContext hmsContext) : base(hmsContext)
+        public UserRepository(HmsContext hmsContext) : base(hmsContext)
         {
+        }
+
+        public async Task<bool> Any(Expression<Func<User, bool>> expression)
+        {
+            return await _hmsContext.Set<User>()
+                .AnyAsync(expression);
+
         }
 
         public async Task<IReadOnlyList<User>> GetByRole(Expression<Func<User, bool>> expression)
@@ -28,6 +35,21 @@ namespace HMS.Implementation.Repositories
                .Include(u => u.UserRoles)
                .ThenInclude(u => u.Role)
                .SingleOrDefaultAsync();
+        }
+
+        Task<bool> IUserRepository.Any(Expression<Func<User, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IReadOnlyList<User>> IUserRepository.GetByRole(Expression<Func<User, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<User> IUserRepository.GetUserAndRoles(Guid userId)
+        {
+            throw new NotImplementedException();
         }
     }
 

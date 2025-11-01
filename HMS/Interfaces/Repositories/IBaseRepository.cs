@@ -1,11 +1,12 @@
-﻿using HMS.Models.Contracts;
+﻿using HMS.Contracts.Entities;
 using System.Linq.Expressions;
 
 namespace HMS.Interfaces.Repositories
 {
     public interface IBaseRepository
     {
-        void Add<T>(T entity) where T : BaseEntity;
+        //void Add<T>(T entity) where T : BaseEntity;
+        Task<T> Add<T>(T entity) where T : BaseEntity;
         void Update<T>(T entity) where T : BaseEntity;
         void Delete<T>(T entity) where T : BaseEntity;
         Task<T> Get<T>(Expression<Func<T, bool>> expression) where T : BaseEntity;

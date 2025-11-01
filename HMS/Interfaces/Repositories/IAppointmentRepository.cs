@@ -1,5 +1,4 @@
-﻿using HMS.Models.Contracts;
-using HMS.Models.Entities;
+﻿using HMS.Models.Entities;
 
 namespace HMS.Interfaces.Repositories
 {

@@ -1,0 +1,100 @@
+﻿using HMS.Interfaces.Repositories;
+using HMS.Interfaces.Services;
+using HMS.Models.DTOs;
+using HMS.Models.DTOs.Specialty;
+using HMS.Models.Entities;
+
+namespace HMS.Implementation.Services
+{
+    public class SpecialtyService : ISpecialtyService
+    {
+        private readonly ISpecialityRepository _specialityRepository;
+        private readonly ILogger<SpecialtyService> _logger;
+
+        public SpecialtyService(ISpecialityRepository specialityRepository, 
+            ILogger<SpecialtyService> logger)
+        {
+            _logger = logger;
+            _specialityRepository = specialityRepository;
+        }
+        public async Task<BaseResponse<bool>> CreateAsync(CreateSpecialtyRequestModel request)
+        {
+            var specialtyExists = await _specialityRepository.Any(s => s.Name == request.Name);
+            if (specialtyExists)
+            {
+                return new BaseResponse<bool>
+                {
+                    Message = "Speciality already exists",
+                    Status = false
+                };
+            }
+            var speciality = new Speciality
+            {
+                Name = request.Name,
+                Position = request.Position,
+                Description = request.Description,
+                DateCreated = DateTime.UtcNow,
+            };
+
+            var createSpecialty = await _specialityRepository.Add(speciality);
+            if (createSpecialty != null)
+            {
+                return new BaseResponse<bool>
+                {
+                    Message = "Specialty couldn't be created",
+                    Status = false,
+
+                };
+
+            }
+            return new BaseResponse<bool>
+            {
+                Message = "Specialty created successfully",
+                Status = true
+            };
+
+        }
+
+        public Task<BaseResponse<bool>> DeleteAsync(Guid specialtyId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<SpecialtyDto>> GetAsync(string param, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse<SpecialtyDto>> GetByIdAsync(Guid specialtyId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<BaseResponse<IReadOnlyList<SpecialtyDto>>> GetSpecialitiesAsync(CancellationToken cancellationToken)
+        {
+            var specialities = await _specialityRepository.GetAll<Speciality>();
+            if (!specialities.Any())
+            {
+                return new BaseResponse<IReadOnlyList<SpecialtyDto>>
+                {
+                    Message = "No data found",
+                    Status = false
+                };
+            }
+
+            return new BaseResponse<IReadOnlyList<SpecialtyDto>>
+            {
+                Message = "Data fetched successfully",
+                Status = true,
+                Data = specialities.Select(s => new SpecialtyDto
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Position = s.Position,
+                    Description = s.Description,
+                    DateCreated = s.DateCreated,
+                }).ToList()
+            };
+        }
+    }
+}

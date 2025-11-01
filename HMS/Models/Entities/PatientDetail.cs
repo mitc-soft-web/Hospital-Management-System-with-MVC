@@ -1,4 +1,4 @@
-﻿using HMS.Models.Contracts;
+﻿using HMS.Contracts.Entities;
 
 namespace HMS.Models.Entities
 {

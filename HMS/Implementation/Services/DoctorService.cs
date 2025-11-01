@@ -2,53 +2,51 @@
 using HMS.Interfaces.Repositories;
 using HMS.Interfaces.Services;
 using HMS.Models.DTOs;
-using HMS.Models.DTOs.Patient;
+using HMS.Models.DTOs.Doctor;
 using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace HMS.Implementation.Services
-{ 
-
-    public class PatientService : IPatientService
+{
+    public class DoctorService : IDoctorService
     {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly IIdentityService _identityService;
         private readonly IRoleRepository _roleRepository;
-        private readonly IPatientRepository _patientRepository;
+        private readonly IDoctorRepository _doctorRepository;
         private readonly IUnitOfWork _unitOfWork;
-        ILogger<PatientService> _logger;
-        public PatientService(IUserRepository userRepository,
+        ILogger<DoctorService> _logger;
+        public DoctorService(IUserRepository userRepository,
             UserManager<User> userManager,
             IIdentityService identityService,
             IRoleRepository roleRepository,
-            IPatientRepository patientRepository,
+            IDoctorRepository doctorRepository,
             IUnitOfWork unitOfWork,
-            ILogger<PatientService> logger)
+            ILogger<DoctorService> logger)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _identityService = identityService;
             _roleRepository = roleRepository;
-            _patientRepository = patientRepository;
+            _doctorRepository = doctorRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<BaseResponse<bool>> CreateAsync(CreatePatientRequestModel request)
+        public async Task<BaseResponse<bool>> CreateAsync(CreateDoctorRequestModel request)
         {
-
-            var patientExists = await _userRepository.Any(u => u.Email == request.Email);
-            if(patientExists)
+            var doctorExists = await _userRepository.Any(u => u.Email == request.Email);
+            if (doctorExists)
             {
-                _logger.LogError("Patient with email already exist");
+                _logger.LogError("Doctor with email already exist");
                 return new BaseResponse<bool>
                 {
-                    Message = "Patient with email already exist",
+                    Message = "Doctor with email already exist",
                     Status = false
                 };
             }
 
-            var patientUser = new User
+            var doctorUser = new User
             {
                 Email = request.Email,
             };
@@ -62,9 +60,9 @@ namespace HMS.Implementation.Services
             (var passwordResult, var message) = ValidatePassword(request.PasswordHash);
             if (!passwordResult) return new BaseResponse<bool> { Message = message, Status = false };
 
-            patientUser.PasswordHash = _identityService.GetPasswordHash(request.PasswordHash);
+            doctorUser.PasswordHash = _identityService.GetPasswordHash(request.PasswordHash);
 
-            var newUser = await _userManager.CreateAsync(patientUser);
+            var newUser = await _userManager.CreateAsync(doctorUser);
             if (newUser == null)
             {
                 _logger.LogError("User Creation unsuccessful");
@@ -73,13 +71,13 @@ namespace HMS.Implementation.Services
                     Message = "User Creation unsuccessful",
                     Status = false
                 };
-               
+
             }
             var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
 
             var userRoleNames = roles.Select(r => r.Name).ToList();
 
-            var result = await _userManager.AddToRolesAsync(patientUser, userRoleNames);
+            var result = await _userManager.AddToRolesAsync(doctorUser, userRoleNames);
             if (!result.Succeeded)
             {
                 _logger.LogError("Unable to add user to roles");
@@ -90,129 +88,102 @@ namespace HMS.Implementation.Services
                 };
             }
 
-            var userRoles = await _userManager.GetRolesAsync(patientUser);
+            var userRoles = await _userManager.GetRolesAsync(doctorUser);
 
-            var token = _identityService.GenerateToken(patientUser, userRoles);
+            var token = _identityService.GenerateToken(doctorUser, userRoles);
 
             if (!result.Succeeded)
             {
-                throw new Exception($"Unable to add patient to roles");
+                throw new Exception($"Unable to add doctor to roles");
             }
 
-            var patient = new Patient
+            var doctor = new Doctor
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Address = request.Address,
                 Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth,
                 PhoneNumber = request.PhoneNumber,
-                MedicalRecordNumber = GeneratePatientMedicalRecordNumber(request.FirstName, request.LastName),
-                UserId = patientUser.Id,
-                DateCreated = DateTime.UtcNow,
-                PatientDetail = new PatientDetail
-                {
-                    Allergies = request.Allergies,
-                    BloodGroup = request.BloodGroup,
-                    EmergencyContact = request.EmergencyContact,
-                    Genotype = request.Genotype,
-                    MedicalHistory = request.MedicalHistory,
-                    DateCreated = DateTime.UtcNow,
-                }
-
+                Qualification = request.Qualification,
+                YearsOfExperience = request.YearsOfExperience
 
             };
-            var createPatient = await _patientRepository.Add(patient);
-            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
-
-            if(createPatient == null)
+            foreach(var speciality in request.SpecialityIds)
             {
-                _logger.LogError("Patient couldn't be added");
-                return new BaseResponse<bool>
+                doctor.DoctorSpecialities.Add(new DoctorSpeciality
                 {
-                    Message = "Patient couldn't be added",
-                    Status = false,
-                };
+                    SpecialityId = speciality,
+
+
+                });
             }
-            _logger.LogInformation("Patient added successfully");
-            return new BaseResponse<bool>
-            {
-                Message = "Patient added successfully",
-                Status = true
-            };
-        }
 
-        public async Task<BaseResponse<bool>> DeleteAsync(Guid patientId)
-        {
-            var getPatient = await _patientRepository.Get<Patient>(p => p.Id == patientId);
-            if(getPatient == null)
+            var createDoctor = await _doctorRepository.Add(doctor);
+            if(createDoctor == null)
             {
-                _logger.LogError("Patient couldn't be found");
+                _logger.LogError("Couldn't create doctor");
                 return new BaseResponse<bool>
                 {
-                    Message = "Patient couldn't be found",
+                    Message = "Couldn't create doctor",
                     Status = false
                 };
             }
-             _patientRepository.Delete<Patient>(getPatient);
+            _logger.LogInformation("Doctor created successfully");
             return new BaseResponse<bool>
             {
-                Message = "Patient deletion successful",
+                Message = "Doctor created successfully",
                 Status = true
             };
+
         }
 
-        public Task<IReadOnlyList<PatientDto>> GetAsync(string param, CancellationToken cancellationToken)
+        public Task<BaseResponse<bool>> DeleteAsync(Guid doctorId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<BaseResponse<PatientDto>> GetByIdAsync(Guid patientId, CancellationToken cancellationToken)
+        public Task<IReadOnlyList<DoctorDto>> GetAsync(string param, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResponse<IReadOnlyList<PatientDto>>> GetPatientsAsync(CancellationToken cancellationToken)
+        public Task<BaseResponse<DoctorDto>> GetByIdAsync(Guid dotorId, CancellationToken cancellationToken)
         {
-            var patients = await _patientRepository.GetAll<Patient>();
+            throw new NotImplementedException();
+        }
 
-            if (!patients.Any())
+        public async Task<BaseResponse<IReadOnlyList<DoctorDto>>> GetPatientsAsync(CancellationToken cancellationToken)
+        {
+            var doctors = await _doctorRepository.GetAll<Doctor>();
+            if (!doctors.Any())
             {
                 _logger.LogError("No data found");
-                return new BaseResponse<IReadOnlyList<PatientDto>>
+                return new BaseResponse<IReadOnlyList<DoctorDto>>
                 {
                     Message = "No data found",
                     Status = false
                 };
             }
 
-            return new BaseResponse<IReadOnlyList<PatientDto>>
+            return new BaseResponse<IReadOnlyList<DoctorDto>>
             {
-                Message = "Data fetched successfully",
-                Data = patients.Select(p => new PatientDto
+                Message = "Date fetched seuccessfully",
+                Status = true,
+                Data = doctors.Select(d => new DoctorDto
                 {
-                    Id = p.Id,
-                    FirstName = p.FirstName,
-                    LastName = p.LastName,
-                    Gender = p.Gender,
-                    DateOfBirth = p.DateOfBirth,
-                    MedicalRecordNumber = p.MedicalRecordNumber,
-                    PhoneNumber = p.PhoneNumber,
-                    UserId = p.UserId,
-                    Address = p.Address,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    Address = d.Address,
+                    DateOfBirth = d.DateOfBirth,
+                    Email = d.User.Email,
+                    Gender = d.Gender,
+                    Qualification = d.Qualification,
+                    YearsOfExperience = d.YearsOfExperience,
+                    DateModified = d.DateModified,
+
 
                 }).ToList()
             };
-
-            
-        }
-
-        private string GeneratePatientMedicalRecordNumber(string firstName, string lastName)
-        {
-            string first = firstName.Substring(0, 2).ToString().Trim().ToUpper();
-            string second = lastName.Substring(1, 2).ToString().Trim().ToUpper();
-
-            return $"{first}{second}{Guid.NewGuid().ToString().Substring(0, 5).Replace("-", "").Trim().ToUpper()}";
         }
 
         private static (bool, string?) ValidatePassword(string password)

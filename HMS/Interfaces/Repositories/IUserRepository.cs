@@ -1,5 +1,4 @@
-﻿using HMS.Models.Contracts;
-using HMS.Models.Entities;
+﻿using HMS.Models.Entities;
 using System.Linq.Expressions;
 
 namespace HMS.Interfaces.Repositories
@@ -8,5 +7,6 @@ namespace HMS.Interfaces.Repositories
     {
        public Task<IReadOnlyList<User>> GetByRole(Expression<Func<User, bool>> expression);
        public Task<User> GetUserAndRoles(Guid userId);
+        Task<bool> Any(Expression<Func<User, bool>> expression);
     }
 }

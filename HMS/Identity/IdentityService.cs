@@ -1,4 +1,5 @@
-﻿using HMS.Interfaces.Repositories;
+﻿using HMS.Contracts.Services;
+using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -25,15 +26,15 @@ namespace HMS.Identity
             _userRepository = userRepository;
         }
 
-        public bool CheckPasswordAsync(User user, string password)
-        {
-            var hashPassword = HashPasswordAsync(password);
-            if (user.PasswordHash == hashPassword)
-            {
-                return true;
-            }
-            return false;
-        }
+        //public bool CheckPasswordAsync(User user, string password)
+        //{
+        //    var hashPassword = HashPasswordAsync(password);
+        //    if (user.PasswordHash == hashPassword)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public string GetUniqueKey(int size)
         {
@@ -157,16 +158,16 @@ namespace HMS.Identity
             return _httpContextAccessor.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value;
         }
 
-        private string HashPasswordAsync(string password)
-        {
-            using (var md5Hash = MD5.Create())
-            {
-                var sourceBytes = Encoding.UTF8.GetBytes(password);
-                var hashBytes = md5Hash.ComputeHash(sourceBytes);
-                var hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
-                return hash.ToLower();
-            }
-        }
+        //private string HashPasswordAsync(string password)
+        //{
+        //    using (var md5Hash = MD5.Create())
+        //    {
+        //        var sourceBytes = Encoding.UTF8.GetBytes(password);
+        //        var hashBytes = md5Hash.ComputeHash(sourceBytes);
+        //        var hash = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+        //        return hash.ToLower();
+        //    }
+        //}
 
        
 

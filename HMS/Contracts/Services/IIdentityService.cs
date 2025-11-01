@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace HMS.Identity
+namespace HMS.Contracts.Services
 {
     public interface IIdentityService
     {
@@ -21,7 +21,7 @@ namespace HMS.Identity
         Task<User> FindByNameAsync(string userName);
         Task<User> FindUserAsync(string userName);
         Task<IList<string>> GetRolesAsync(User user);
-        bool CheckPasswordAsync(User user, string password);
+        //bool CheckPasswordAsync(User user, string password);
         public Task<User> GetLoggedInUser();
     }
 }

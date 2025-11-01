@@ -1,6 +1,6 @@
 ﻿using HMS.Models.Enums;
 
-namespace HMS.Models.Contracts
+namespace HMS.Contracts.Entities
 {
     public abstract class BaseUser : BaseEntity
     {

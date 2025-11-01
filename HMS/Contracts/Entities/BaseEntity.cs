@@ -2,7 +2,7 @@
 using HMS.Models.Enums;
 using MassTransit;
 
-namespace HMS.Models.Contracts
+namespace HMS.Contracts.Entities
 {
     public abstract class BaseEntity
     {

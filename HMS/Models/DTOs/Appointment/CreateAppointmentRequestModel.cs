@@ -1,15 +1,11 @@
-﻿using HMS.Contracts.Entities;
-using HMS.Models.Enums;
+﻿using HMS.Models.Enums;
 
-namespace HMS.Models.Entities
+namespace HMS.Models.DTOs.Appointment
 {
-    public class Appointment : BaseEntity
+    public class CreateAppointmentRequestModel
     {
         public Guid PatientId { get; set; }
-        public Patient Patient { get; set; }
         public Guid DoctorId { get; set; }
-        public Doctor Doctor { get; set; }
-
         public string Title { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }

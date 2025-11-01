@@ -3,7 +3,7 @@ using HMS.Models.DTOs.Patient;
 
 namespace HMS.Interfaces.Services
 {
-    public interface IPatientService
+    public interface IAppointmentService
     {
         Task<BaseResponse<bool>> CreateAsync(CreatePatientRequestModel request);
         Task<BaseResponse<PatientDto>> GetByIdAsync(Guid patientId, CancellationToken cancellationToken);

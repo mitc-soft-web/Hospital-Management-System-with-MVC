@@ -1,5 +1,5 @@
-﻿using HMS.Interfaces.Repositories;
-using HMS.Models.Contracts;
+﻿using HMS.Contracts.Entities;
+using HMS.Interfaces.Repositories;
 using HMS.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

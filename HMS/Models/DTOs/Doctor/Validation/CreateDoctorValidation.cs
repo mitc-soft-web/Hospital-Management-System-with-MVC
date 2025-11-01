@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace HMS.Models.DTOs.Patient.Validation
+namespace HMS.Models.DTOs.Doctor.Validation
 {
-    public class CreatePatientValidation : AbstractValidator<CreatePatientRequestModel>
+    public class CreateDoctorValidation : AbstractValidator<CreateDoctorRequestModel>
     {
-        public CreatePatientValidation()
+        public CreateDoctorValidation()
         {
             RuleFor(x => x.FirstName).Length(3, 50).NotEmpty().WithMessage("Firstname is required");
             RuleFor(x => x.LastName).Length(3, 50).NotEmpty().WithMessage("Lastname is required");
@@ -15,10 +15,9 @@ namespace HMS.Models.DTOs.Patient.Validation
             RuleFor(x => x.DateOfBirth).NotEmpty().WithMessage("Date of birth is required");
             RuleFor(x => x.Gender).NotEmpty().WithMessage("Gender is required");
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phone number is required");
-            RuleFor(x => x.BloodGroup).NotEmpty().WithMessage("Blood group is required");
-            RuleFor(x => x.Genotype).NotEmpty().WithMessage("Genotype is required");
-            RuleFor(x => x.EmergencyContact).NotEmpty().WithMessage("Emergency contact is required");
-
+            RuleFor(x => x.Qualification).NotEmpty().WithMessage("Qualification required");
+            RuleFor(x => x.SpecialityIds).NotEmpty().WithMessage("Speciality required");
+            RuleFor(x => x.YearsOfExperience).NotEmpty().WithMessage("Years of experience required");
         }
     }
 }

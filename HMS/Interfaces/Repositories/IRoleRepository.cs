@@ -1,5 +1,4 @@
-﻿using HMS.Models.Contracts;
-using HMS.Models.Entities;
+﻿using HMS.Models.Entities;
 using System.Linq.Expressions;
 
 namespace HMS.Interfaces.Repositories
@@ -8,5 +7,6 @@ namespace HMS.Interfaces.Repositories
     {
 
         Task<IEnumerable<Role>> GetRolesByIdsAsync(Expression<Func<Role, bool>> expression);
+        Task<IEnumerable<Role>> GetRoles();
     }
 }

@@ -1,6 +1,13 @@
+using HMS.Identity;
+using HMS.Implementation.Repositories;
+using HMS.Implementation.Services;
+using HMS.Interfaces.Repositories;
+using HMS.Interfaces.Services;
+using HMS.Models.Entities;
 using HMS.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -19,6 +26,19 @@ builder.Services.Scan(scan => scan
         .AsImplementedInterfaces()
         .WithScopedLifetime());
 
+//builder.Services.AddScoped<IBaseRepository, BaseRespository>()
+//    .AddScoped<IPatientRepository, PatientRepository>()
+//    .AddScoped<IDoctorRepository, DoctorRepository>()
+//    .AddScoped<IRoleRepository, RoleRepository>()
+//    .AddScoped<ISpecialityRepository, SpecialityRepository>()
+//    .AddScoped<IUserRepository, UserRepository>()
+//    .AddScoped<IPatientRepository, PatientRepository>();
+
+//builder.Services.AddScoped<IPatientService, PatientService>()
+//    .AddScoped<IRoleService, RoleService>()
+//    .AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add Database
 builder.Services.AddDbContext<HmsContext>(options =>
@@ -26,6 +46,11 @@ builder.Services.AddDbContext<HmsContext>(options =>
         new MySqlServerVersion(new Version(9, 0, 0))
     ));
 
+//builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IUserStore<User>, HMS.Identity.UserStore>();
+builder.Services.AddScoped<IRoleStore<Role>, RoleStore>();
+builder.Services.AddIdentity<User, Role>()
+    .AddDefaultTokenProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAuthentication(options =>
 {
