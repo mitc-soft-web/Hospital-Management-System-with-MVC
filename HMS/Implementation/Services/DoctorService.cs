@@ -108,7 +108,7 @@ namespace HMS.Implementation.Services
                 YearsOfExperience = request.YearsOfExperience
 
             };
-            foreach(var speciality in request.SpecialityIds)
+            foreach (var speciality in request.SpecialityIds)
             {
                 doctor.DoctorSpecialities.Add(new DoctorSpeciality
                 {
@@ -119,7 +119,7 @@ namespace HMS.Implementation.Services
             }
 
             var createDoctor = await _doctorRepository.Add(doctor);
-            if(createDoctor == null)
+            if (createDoctor == null)
             {
                 _logger.LogError("Couldn't create doctor");
                 return new BaseResponse<bool>
@@ -152,7 +152,7 @@ namespace HMS.Implementation.Services
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResponse<IReadOnlyList<DoctorDto>>> GetPatientsAsync(CancellationToken cancellationToken)
+        public async Task<BaseResponse<IReadOnlyList<DoctorDto>>> GetDotorsAsync(CancellationToken cancellationToken)
         {
             var doctors = await _doctorRepository.GetAll<Doctor>();
             if (!doctors.Any())

@@ -8,12 +8,12 @@ namespace HMS.Implementation.Repositories
     {
         public PatientRepository(HmsContext hmsContext) : base(hmsContext)
         {
-           
+
         }
 
         public async Task<Patient> Add(Patient entity)
         {
-           var patient = await _hmsContext.AddAsync(entity);
+            var patient = await _hmsContext.AddAsync(entity);
             return entity;
 
         }

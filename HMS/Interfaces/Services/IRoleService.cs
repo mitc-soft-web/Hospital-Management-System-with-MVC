@@ -1,5 +1,4 @@
 ﻿using HMS.Models.DTOs;
-using HMS.Models.DTOs.Patient;
 using HMS.Models.DTOs.Role;
 
 namespace HMS.Interfaces.Services

@@ -11,7 +11,7 @@ namespace HMS.Implementation.Services
         private readonly ISpecialityRepository _specialityRepository;
         private readonly ILogger<SpecialtyService> _logger;
 
-        public SpecialtyService(ISpecialityRepository specialityRepository, 
+        public SpecialtyService(ISpecialityRepository specialityRepository,
             ILogger<SpecialtyService> logger)
         {
             _logger = logger;

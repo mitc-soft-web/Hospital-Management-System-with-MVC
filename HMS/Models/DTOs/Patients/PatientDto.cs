@@ -1,8 +1,7 @@
 ﻿using HMS.Models.Entities;
 using HMS.Models.Enums;
-using MassTransit;
 
-namespace HMS.Models.DTOs.Patient
+namespace HMS.Models.DTOs.Patients
 {
     public class PatientDto
     {
@@ -19,7 +18,7 @@ namespace HMS.Models.DTOs.Patient
         public Guid UserId { get; set; }
         public User User { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<Entities.Appointment> Appointments { get; set; } = [];
         public PatientDetail PatientDetail { get; set; }
     }
 }

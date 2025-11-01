@@ -6,7 +6,7 @@ namespace HMS.Models.DTOs.Appointment.Validation
     {
         public CreateAppointmentValidation()
         {
-            
+
         }
     }
 }

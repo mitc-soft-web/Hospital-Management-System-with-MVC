@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using HMS.Models.Entities;
+﻿using HMS.Models.Entities;
 using HMS.Models.Enums;
 
 namespace HMS.Models.DTOs.Patient
@@ -23,6 +22,6 @@ namespace HMS.Models.DTOs.Patient
         public string Genotype { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = [];
         public List<Guid> RoleIds { get; set; } = [];
-        
+
     }
 }

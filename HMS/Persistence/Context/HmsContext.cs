@@ -8,80 +8,80 @@ namespace HMS.Persistence.Context
     {
         public HmsContext(DbContextOptions<HmsContext> options) : base(options)
         {
-          
+
 
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-                builder.Entity<Admin>()
-                .HasOne(a => a.User)
-                .WithOne(u => u.Admin)
-                .HasForeignKey<Admin>(a => a.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-                        SeedAdminData(builder);
+            builder.Entity<Admin>()
+            .HasOne(a => a.User)
+            .WithOne(u => u.Admin)
+            .HasForeignKey<Admin>(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+            SeedAdminData(builder);
 
-                        SeedRoleData(builder);
-
-
-                    builder.Entity<UserRole>()
-                        .HasOne(ur => ur.User)
-                        .WithMany(u => u.UserRoles)
-                        .HasForeignKey(ur => ur.UserId);
-
-                    builder.Entity<UserRole>()
-                        .HasOne(ur => ur.Role)
-                        .WithMany(r => r.UserRoles)
-                        .HasForeignKey(ur => ur.RoleId);
-
-                    builder.Entity<User>()
-                    .HasIndex(u => u.Email)
-                    .IsUnique();
-
-                    builder.Entity<User>()
-                        .HasOne(u => u.Patient)
-                        .WithOne(p => p.User)
-                        .HasForeignKey<Patient>(p => p.UserId)
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    builder.Entity<User>()
-                        .HasOne(u => u.Doctor)
-                        .WithOne(d => d.User)
-                        .HasForeignKey<Doctor>(d => d.UserId)
-                        .OnDelete(DeleteBehavior.Cascade);
+            SeedRoleData(builder);
 
 
-                    builder.Entity<Patient>()
-                   .HasOne(p => p.PatientDetail)
-                   .WithOne(pd => pd.Patient)
-                   .HasForeignKey<PatientDetail>(pd => pd.PatientId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
 
-                    builder.Entity<Doctor>()
-                        .HasMany(d => d.Appointments)
-                        .WithOne(a => a.Doctor)
-                        .HasForeignKey(a => a.DoctorId)
-                        .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
 
-                    builder.Entity<Patient>()
-                        .HasMany(p => p.Appointments)
-                        .WithOne(a => a.Patient)
-                        .HasForeignKey(a => a.PatientId)
-                        .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+            builder.Entity<User>()
+                .HasOne(u => u.Patient)
+                .WithOne(p => p.User)
+                .HasForeignKey<Patient>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<User>()
+                .HasOne(u => u.Doctor)
+                .WithOne(d => d.User)
+                .HasForeignKey<Doctor>(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
-                    builder.Entity<DoctorSpeciality>()
-                    .HasKey(ds => new { ds.DoctorId, ds.SpecialityId });
+            builder.Entity<Patient>()
+           .HasOne(p => p.PatientDetail)
+           .WithOne(pd => pd.Patient)
+           .HasForeignKey<PatientDetail>(pd => pd.PatientId)
+           .OnDelete(DeleteBehavior.Cascade);
 
-                    builder.Entity<DoctorSpeciality>()
-                        .HasOne(ds => ds.Doctor)
-                        .WithMany(d => d.DoctorSpecialities)
-                        .HasForeignKey(ds => ds.DoctorId);
+            builder.Entity<Doctor>()
+                .HasMany(d => d.Appointments)
+                .WithOne(a => a.Doctor)
+                .HasForeignKey(a => a.DoctorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                    builder.Entity<DoctorSpeciality>()
-                        .HasOne(ds => ds.Speciality)
-                        .WithMany(s => s.DoctorSpecialities)
-                        .HasForeignKey(ds => ds.SpecialityId);
+            builder.Entity<Patient>()
+                .HasMany(p => p.Appointments)
+                .WithOne(a => a.Patient)
+                .HasForeignKey(a => a.PatientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<DoctorSpeciality>()
+            .HasKey(ds => new { ds.DoctorId, ds.SpecialityId });
+
+            builder.Entity<DoctorSpeciality>()
+                .HasOne(ds => ds.Doctor)
+                .WithMany(d => d.DoctorSpecialities)
+                .HasForeignKey(ds => ds.DoctorId);
+
+            builder.Entity<DoctorSpeciality>()
+                .HasOne(ds => ds.Speciality)
+                .WithMany(s => s.DoctorSpecialities)
+                .HasForeignKey(ds => ds.SpecialityId);
 
             base.OnModelCreating(builder);
         }

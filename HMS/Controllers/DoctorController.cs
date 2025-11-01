@@ -1,7 +1,5 @@
-﻿using HMS.Implementation.Services;
-using HMS.Interfaces.Services;
+﻿using HMS.Interfaces.Services;
 using HMS.Models.DTOs.Doctor;
-using HMS.Models.DTOs.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

@@ -13,8 +13,15 @@ namespace HMS.Implementation.Repositories
         {
             _hmsContext = hmsContext ?? throw new ArgumentNullException(nameof(hmsContext));
         }
-        public virtual void Add<T>(T entity) where T : BaseEntity => _hmsContext.Add(entity);
-        
+        public virtual async Task<T> Add<T>(T entity) where T : BaseEntity
+        {
+            var entry = await _hmsContext.Set<T>().AddAsync(entity);
+            return entry.Entity;
+        }
+
+
+        //public virtual void Add<T>(T entity) where T : BaseEntity => _hmsContext.Add(entity);
+
         public virtual void Delete<T>(T entity) where T : BaseEntity
         {
             throw new NotImplementedException();
@@ -38,6 +45,7 @@ namespace HMS.Implementation.Repositories
         }
 
         public void Update<T>(T entity) where T : BaseEntity => _hmsContext.Set<T>().Update(entity);
+
 
     }
 }

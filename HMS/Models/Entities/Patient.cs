@@ -1,5 +1,4 @@
 ﻿using HMS.Contracts.Entities;
-using HMS.Models.Enums;
 
 namespace HMS.Models.Entities
 {

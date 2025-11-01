@@ -1,7 +1,5 @@
 ﻿using HMS.Models.DTOs;
 using HMS.Models.DTOs.Doctor;
-using HMS.Models.DTOs.Patient;
-using System.Runtime.Intrinsics.Arm;
 
 namespace HMS.Interfaces.Services
 {

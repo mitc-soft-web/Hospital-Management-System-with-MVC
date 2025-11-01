@@ -4,7 +4,7 @@ namespace HMS.Interfaces.Repositories
 {
     public interface IDoctorRepository : IBaseRepository
     {
-        public Task<List<Doctor>> GetDoctorsBySpeciality(string  specialityName);
+        public Task<List<Doctor>> GetDoctorsBySpeciality(string specialityName);
         public Task<IReadOnlyList<Doctor>> GetAllDoctorsAndTheirSpecialities();
     }
 }

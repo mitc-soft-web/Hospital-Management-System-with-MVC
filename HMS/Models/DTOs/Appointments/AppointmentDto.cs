@@ -1,5 +1,4 @@
 ﻿using HMS.Models.Enums;
-using MassTransit;
 
 namespace HMS.Models.DTOs.Appointment
 {

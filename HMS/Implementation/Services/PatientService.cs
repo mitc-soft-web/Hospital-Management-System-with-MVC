@@ -3,11 +3,12 @@ using HMS.Interfaces.Repositories;
 using HMS.Interfaces.Services;
 using HMS.Models.DTOs;
 using HMS.Models.DTOs.Patient;
+using HMS.Models.DTOs.Patients;
 using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace HMS.Implementation.Services
-{ 
+{
 
     public class PatientService : IPatientService
     {
@@ -38,7 +39,7 @@ namespace HMS.Implementation.Services
         {
 
             var patientExists = await _userRepository.Any(u => u.Email == request.Email);
-            if(patientExists)
+            if (patientExists)
             {
                 _logger.LogError("Patient with email already exist");
                 return new BaseResponse<bool>
@@ -73,7 +74,7 @@ namespace HMS.Implementation.Services
                     Message = "User Creation unsuccessful",
                     Status = false
                 };
-               
+
             }
             var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
 
@@ -125,7 +126,7 @@ namespace HMS.Implementation.Services
             var createPatient = await _patientRepository.Add(patient);
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            if(createPatient == null)
+            if (createPatient == null)
             {
                 _logger.LogError("Patient couldn't be added");
                 return new BaseResponse<bool>
@@ -145,7 +146,7 @@ namespace HMS.Implementation.Services
         public async Task<BaseResponse<bool>> DeleteAsync(Guid patientId)
         {
             var getPatient = await _patientRepository.Get<Patient>(p => p.Id == patientId);
-            if(getPatient == null)
+            if (getPatient == null)
             {
                 _logger.LogError("Patient couldn't be found");
                 return new BaseResponse<bool>
@@ -154,7 +155,7 @@ namespace HMS.Implementation.Services
                     Status = false
                 };
             }
-             _patientRepository.Delete<Patient>(getPatient);
+            _patientRepository.Delete<Patient>(getPatient);
             return new BaseResponse<bool>
             {
                 Message = "Patient deletion successful",
@@ -204,7 +205,7 @@ namespace HMS.Implementation.Services
                 }).ToList()
             };
 
-            
+
         }
 
         private string GeneratePatientMedicalRecordNumber(string firstName, string lastName)

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using HMS.Contracts.Entities;
+﻿using HMS.Contracts.Entities;
 
 namespace HMS.Models.Entities
 {
@@ -8,7 +7,7 @@ namespace HMS.Models.Entities
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
-        public Guid? PatientId {  get; set; }
+        public Guid? PatientId { get; set; }
 
         public Patient? Patient { get; set; }
         public Guid DoctorId { get; set; }
@@ -30,5 +29,5 @@ namespace HMS.Models.Entities
         }
     }
 
-    
+
 }

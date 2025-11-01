@@ -25,7 +25,7 @@ namespace HMS.Implementation.Repositories
                 .Where(expression)
                 .AsNoTracking()
                 .ToListAsync();
-         
+
         }
 
         public async Task<User> GetUserAndRoles(Guid userId)

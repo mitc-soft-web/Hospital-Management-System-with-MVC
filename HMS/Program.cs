@@ -1,13 +1,10 @@
 using HMS.Identity;
 using HMS.Implementation.Repositories;
-using HMS.Implementation.Services;
 using HMS.Interfaces.Repositories;
-using HMS.Interfaces.Services;
 using HMS.Models.Entities;
 using HMS.Persistence.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

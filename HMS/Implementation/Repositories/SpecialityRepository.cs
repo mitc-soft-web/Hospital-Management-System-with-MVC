@@ -17,7 +17,7 @@ namespace HMS.Implementation.Repositories
         {
             return await _hmsContext.Set<Speciality>()
                 .AnyAsync(expression);
-                
+
         }
     }
 }

@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using HMS.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace HMS.Controllers
 {

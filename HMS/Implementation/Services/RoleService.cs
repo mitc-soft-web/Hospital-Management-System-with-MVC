@@ -1,7 +1,6 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Interfaces.Services;
 using HMS.Models.DTOs;
-using HMS.Models.DTOs.Patient;
 using HMS.Models.DTOs.Role;
 
 namespace HMS.Implementation.Services
