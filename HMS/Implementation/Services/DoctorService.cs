@@ -118,6 +118,8 @@ namespace HMS.Implementation.Services
                 });
             }
 
+            doctor.FullName();
+
             var createDoctor = await _doctorRepository.Add(doctor);
             if (createDoctor == null)
             {
@@ -173,6 +175,7 @@ namespace HMS.Implementation.Services
                 {
                     FirstName = d.FirstName,
                     LastName = d.LastName,
+                    FullName = d.FullName(),
                     Address = d.Address,
                     DateOfBirth = d.DateOfBirth,
                     Email = d.User.Email,

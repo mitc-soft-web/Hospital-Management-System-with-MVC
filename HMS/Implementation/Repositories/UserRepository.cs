@@ -37,20 +37,18 @@ namespace HMS.Implementation.Repositories
                .SingleOrDefaultAsync();
         }
 
-        Task<bool> IUserRepository.Any(Expression<Func<User, bool>> expression)
+        public async Task<User> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _hmsContext.Set<User>()
+                .Include(u => u.UserRoles)
+                .ThenInclude(u => u.Role)
+                .Include(d => d.Doctor)
+                .Include(p => p.Patient)
+                .ThenInclude(p => p.PatientDetail)
+                .SingleOrDefaultAsync(u => u.Email == email);
         }
 
-        Task<IReadOnlyList<User>> IUserRepository.GetByRole(Expression<Func<User, bool>> expression)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<User> IUserRepository.GetUserAndRoles(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
 }

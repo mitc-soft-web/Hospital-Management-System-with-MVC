@@ -42,9 +42,9 @@ namespace HMS.Controllers
             var doctor = await _doctorService.CreateAsync(model);
             if (!doctor.Status)
             {
-                ViewBag.Failed = "Patient creation unsuccessful";
+                ViewBag.Failed = "Doctor creation unsuccessful";
             }
-            ViewBag.Success = "Patient created successfully";
+            ViewBag.Success = "Doctor created successfully";
 
             return View(doctor);
         }

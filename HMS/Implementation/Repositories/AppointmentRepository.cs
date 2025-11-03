@@ -11,9 +11,22 @@ namespace HMS.Implementation.Repositories
         {
         }
 
+        public async Task<IReadOnlyList<Appointment>> GetAllAppointmentsAndDetails()
+        {
+            return await _hmsContext.Set<Appointment>()
+                .OrderByDescending(d => d.DateCreated)
+                .Include(ap => ap.Patient)
+                .Include(ap => ap.Doctor)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyList<Appointment>> GetAllCancelledAppointments()
         {
             return await _hmsContext.Set<Appointment>()
+                .OrderByDescending (d => d.DateCreated)
+                .Include(ap => ap.Doctor)
+                .Include(ap => ap.Patient)
                 .Where(ap => ap.AppointmentStatus == Models.Enums.AppointmentStatus.Cancelled)
                 .AsNoTracking()
                 .ToListAsync();
@@ -22,6 +35,9 @@ namespace HMS.Implementation.Repositories
         public async Task<IReadOnlyList<Appointment>> GetAllCompletedAppointments()
         {
             return await _hmsContext.Set<Appointment>()
+                .OrderByDescending(d => d.DateCreated)
+                .Include(ap => ap.Doctor)
+                .Include(ap => ap.Patient)
                .Where(ap => ap.AppointmentStatus == Models.Enums.AppointmentStatus.Completed)
                .AsNoTracking()
                .ToListAsync();
@@ -30,6 +46,9 @@ namespace HMS.Implementation.Repositories
         public async Task<IReadOnlyList<Appointment>> GetAllRescheduledAppointments()
         {
             return await _hmsContext.Set<Appointment>()
+                .OrderByDescending(d => d.DateCreated)
+                .Include(ap => ap.Doctor)
+                .Include(ap => ap.Patient)
                .Where(ap => ap.AppointmentStatus == Models.Enums.AppointmentStatus.Rescheduled)
                .AsNoTracking()
                .ToListAsync();
@@ -38,6 +57,9 @@ namespace HMS.Implementation.Repositories
         public async Task<IReadOnlyList<Appointment>> GetAllScheduledAppointments()
         {
             return await _hmsContext.Set<Appointment>()
+                .OrderByDescending(d => d.DateCreated)
+                .Include(ap => ap.Doctor)
+                .Include(ap => ap.Patient)
                .Where(ap => ap.AppointmentStatus == Models.Enums.AppointmentStatus.Scheduled)
                .AsNoTracking()
                .ToListAsync();

@@ -8,6 +8,7 @@ namespace HMS.Interfaces.Repositories
         Task<IReadOnlyList<Appointment>> GetAllRescheduledAppointments();
         Task<IReadOnlyList<Appointment>> GetAllCancelledAppointments();
         Task<IReadOnlyList<Appointment>> GetAllCompletedAppointments();
+        Task<IReadOnlyList<Appointment>> GetAllAppointmentsAndDetails();
 
     }
 }

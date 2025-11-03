@@ -93,7 +93,7 @@ namespace HMS.Implementation.Services
 
             var userRoles = await _userManager.GetRolesAsync(patientUser);
 
-            var token = _identityService.GenerateToken(patientUser, userRoles);
+            //var token = _identityService.GenerateToken(patientUser, userRoles);
 
             if (!result.Succeeded)
             {
@@ -123,6 +123,8 @@ namespace HMS.Implementation.Services
 
 
             };
+
+            patient.FullName();
             var createPatient = await _patientRepository.Add(patient);
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
@@ -195,6 +197,7 @@ namespace HMS.Implementation.Services
                     Id = p.Id,
                     FirstName = p.FirstName,
                     LastName = p.LastName,
+                    FullName = p.FullName(),
                     Gender = p.Gender,
                     DateOfBirth = p.DateOfBirth,
                     MedicalRecordNumber = p.MedicalRecordNumber,
