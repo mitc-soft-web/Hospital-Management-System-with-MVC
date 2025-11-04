@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HMS.Identity
 {
-    public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IQueryableUserStore<User>
+    public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserRoleStore<User>, IQueryableUserStore<User>, IUserEmailStore<User>
     {
         private readonly HmsContext _context;
 

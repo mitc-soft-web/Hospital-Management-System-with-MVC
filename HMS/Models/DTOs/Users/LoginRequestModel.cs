@@ -13,11 +13,7 @@ namespace HMS.Models.DTOs.Users
 
     public class LoginResponseModel : BaseResponse
     {
-        public LoginResponseData Data { get; set; }
-    }
-
-    public class LoginResponseData
-    {
+        public string FullName { get; set; }
         public Guid UserId { get; set; }
         public string Email { get; set; }
         public IEnumerable<RoleDto> Roles { get; set; } = new List<RoleDto>();

@@ -6,5 +6,6 @@ namespace HMS.Interfaces.Repositories
     {
         public Task<List<Doctor>> GetDoctorsBySpeciality(string specialityName);
         public Task<IReadOnlyList<Doctor>> GetAllDoctorsAndTheirSpecialities();
+        Task<int> GetDoctorCounts();
     }
 }

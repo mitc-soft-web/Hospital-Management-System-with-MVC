@@ -69,16 +69,16 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("159c89d0-efae-4a00-bbfc-47d392cc0bcd"),
+                            Id = new Guid("4900c255-ca30-4530-8768-a47eafca42e2"),
                             Address = "Lagos State",
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 136, DateTimeKind.Utc).AddTicks(1396),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 831, DateTimeKind.Utc).AddTicks(5275),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateOfBirth = new DateTime(1994, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Admin",
                             Gender = (byte)1,
                             LastName = "Hms",
                             PhoneNumber = "+23470456780",
-                            UserId = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7")
+                            UserId = new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f")
                         });
                 });
 
@@ -95,7 +95,6 @@ namespace HMS.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ChangeInAppointmentDescription")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("DateCreated")
@@ -326,24 +325,24 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"),
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(2457),
+                            Id = new Guid("9f6c0a6e-8d92-4698-ac3f-4739e96e4e0d"),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 678, DateTimeKind.Utc).AddTicks(7672),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Has full permissions",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("0709b44c-f48f-40ee-bf9d-fb61cb1c84b1"),
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2197),
+                            Id = new Guid("239b3775-c471-4999-b375-b3af2528264e"),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 833, DateTimeKind.Utc).AddTicks(6902),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Can manage appointments and patient records",
                             Name = "Doctor"
                         },
                         new
                         {
-                            Id = new Guid("7ef7ee19-cacf-4ee8-82af-6f69d942eaf4"),
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2273),
+                            Id = new Guid("2ad3ba9b-df63-427b-8f17-ab6097fb227b"),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 833, DateTimeKind.Utc).AddTicks(6923),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Can view appointments",
                             Name = "Patient"
@@ -363,7 +362,6 @@ namespace HMS.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
@@ -420,14 +418,14 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7"),
+                            Id = new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f"),
                             AdminId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(5566),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 679, DateTimeKind.Utc).AddTicks(1331),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DoctorId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Email = "Admin001@gmail.com",
                             EmailConfirmed = true,
-                            PasswordHash = "AQAAAAIAAYagAAAAELoM2b0gICs1ZHTm9JOXgAjGAGWZRhOdNZytRZiJZziMJCGK6/Rzksk85CFWHe6Zyw=="
+                            PasswordHash = "AQAAAAIAAYagAAAAEMRYbNCgj1rhPsA8pduoNNZlFMIFMd0JJR/ffXeJsDk1PDCPkEzVoxsh6NUj+W4/Jw=="
                         });
                 });
 
@@ -460,11 +458,11 @@ namespace HMS.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5273c2b4-c98c-4466-8cf1-6a539ef47f16"),
-                            DateCreated = new DateTime(2025, 10, 30, 8, 26, 26, 135, DateTimeKind.Utc).AddTicks(6596),
+                            Id = new Guid("04395ed7-6ccc-4347-b041-c0695511b090"),
+                            DateCreated = new DateTime(2025, 11, 3, 17, 10, 56, 831, DateTimeKind.Utc).AddTicks(1081),
                             DateModified = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            RoleId = new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"),
-                            UserId = new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7")
+                            RoleId = new Guid("9f6c0a6e-8d92-4698-ac3f-4739e96e4e0d"),
+                            UserId = new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f")
                         });
                 });
 

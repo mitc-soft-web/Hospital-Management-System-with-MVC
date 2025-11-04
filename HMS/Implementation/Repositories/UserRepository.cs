@@ -26,6 +26,7 @@ namespace HMS.Implementation.Repositories
                 .AsNoTracking()
                 .ToListAsync();
 
+
         }
 
         public async Task<User> GetUserAndRoles(Guid userId)
@@ -46,6 +47,8 @@ namespace HMS.Implementation.Repositories
                 .Include(p => p.Patient)
                 .ThenInclude(p => p.PatientDetail)
                 .SingleOrDefaultAsync(u => u.Email == email);
+
+            
         }
 
        

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -40,7 +41,7 @@ namespace HMS.Migrations
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Position = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -241,7 +242,7 @@ namespace HMS.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Location = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ChangeInAppointmentDescription = table.Column<string>(type: "longtext", nullable: false)
+                    ChangeInAppointmentDescription = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AppointmentStatus = table.Column<int>(type: "int", nullable: false),
                     AppointmentDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -302,25 +303,25 @@ namespace HMS.Migrations
                 columns: new[] { "Id", "DateCreated", "DateModified", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0709b44c-f48f-40ee-bf9d-fb61cb1c84b1"), new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2197), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Can manage appointments and patient records", "Doctor" },
-                    { new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"), new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(2457), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Has full permissions", "Admin" },
-                    { new Guid("7ef7ee19-cacf-4ee8-82af-6f69d942eaf4"), new DateTime(2025, 10, 30, 8, 26, 26, 138, DateTimeKind.Utc).AddTicks(2273), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Can view appointments", "Patient" }
+                    { new Guid("239b3775-c471-4999-b375-b3af2528264e"), new DateTime(2025, 11, 3, 17, 10, 56, 833, DateTimeKind.Utc).AddTicks(6902), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Can manage appointments and patient records", "Doctor" },
+                    { new Guid("2ad3ba9b-df63-427b-8f17-ab6097fb227b"), new DateTime(2025, 11, 3, 17, 10, 56, 833, DateTimeKind.Utc).AddTicks(6923), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Can view appointments", "Patient" },
+                    { new Guid("9f6c0a6e-8d92-4698-ac3f-4739e96e4e0d"), new DateTime(2025, 11, 3, 17, 10, 56, 678, DateTimeKind.Utc).AddTicks(7672), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Has full permissions", "Admin" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AdminId", "DateCreated", "DateModified", "DoctorId", "Email", "EmailConfirmed", "PasswordHash", "PatientId" },
-                values: new object[] { new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7"), new Guid("00000000-0000-0000-0000-000000000000"), new DateTime(2025, 10, 30, 8, 26, 25, 958, DateTimeKind.Utc).AddTicks(5566), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), "Admin001@gmail.com", true, "AQAAAAIAAYagAAAAELoM2b0gICs1ZHTm9JOXgAjGAGWZRhOdNZytRZiJZziMJCGK6/Rzksk85CFWHe6Zyw==", null });
+                values: new object[] { new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f"), new Guid("00000000-0000-0000-0000-000000000000"), new DateTime(2025, 11, 3, 17, 10, 56, 679, DateTimeKind.Utc).AddTicks(1331), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("00000000-0000-0000-0000-000000000000"), "Admin001@gmail.com", true, "AQAAAAIAAYagAAAAEMRYbNCgj1rhPsA8pduoNNZlFMIFMd0JJR/ffXeJsDk1PDCPkEzVoxsh6NUj+W4/Jw==", null });
 
             migrationBuilder.InsertData(
                 table: "Admins",
                 columns: new[] { "Id", "Address", "DateCreated", "DateModified", "DateOfBirth", "FirstName", "Gender", "LastName", "PhoneNumber", "UserId" },
-                values: new object[] { new Guid("159c89d0-efae-4a00-bbfc-47d392cc0bcd"), "Lagos State", new DateTime(2025, 10, 30, 8, 26, 26, 136, DateTimeKind.Utc).AddTicks(1396), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1994, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", (byte)1, "Hms", "+23470456780", new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7") });
+                values: new object[] { new Guid("4900c255-ca30-4530-8768-a47eafca42e2"), "Lagos State", new DateTime(2025, 11, 3, 17, 10, 56, 831, DateTimeKind.Utc).AddTicks(5275), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1994, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", (byte)1, "Hms", "+23470456780", new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f") });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
                 columns: new[] { "Id", "DateCreated", "DateModified", "RoleId", "UserId" },
-                values: new object[] { new Guid("5273c2b4-c98c-4466-8cf1-6a539ef47f16"), new DateTime(2025, 10, 30, 8, 26, 26, 135, DateTimeKind.Utc).AddTicks(6596), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1da4011e-d4f4-4138-9a43-519bb19d1e92"), new Guid("4e1abc9c-34e3-417a-ad7d-efea1a7870e7") });
+                values: new object[] { new Guid("04395ed7-6ccc-4347-b041-c0695511b090"), new DateTime(2025, 11, 3, 17, 10, 56, 831, DateTimeKind.Utc).AddTicks(1081), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("9f6c0a6e-8d92-4698-ac3f-4739e96e4e0d"), new Guid("a54c9e83-6a4e-48ee-baaf-3e929a714d3f") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Admins_UserId",

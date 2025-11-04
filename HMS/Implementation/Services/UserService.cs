@@ -13,19 +13,45 @@ namespace HMS.Implementation.Services
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<UserService> _logger;
+        private readonly IDoctorRepository _doctorRepository;
 
         public UserService(IUserRepository userRepository,
-            UserManager<User> userManager, ILogger<User> logger)
+            UserManager<User> userManager, 
+            ILogger<UserService> logger,
+            IDoctorRepository doctorRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
+            _logger = logger;
+            _doctorRepository = doctorRepository;
         }
+
+        public async Task<BaseResponse<int>> GetAllHospitalStaffs(CancellationToken cancellationToken)
+        {
+            var doctorCounts = await _doctorRepository.GetDoctorCounts();
+            if(doctorCounts < 1)
+            {
+                return new BaseResponse<int>()
+                {
+                    Message = "No staff found",
+                    Status = false,
+                };
+            }
+            return new BaseResponse<int>()
+            {
+                Message = $"{doctorCounts} staff found",
+                Status = true,
+                Data = doctorCounts
+            };
+
+        }
+
         public Task<BaseResponse<UserDto>> GetUserByEmail(string email, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResponse<LoginResponseModel>> Login(LoginRequestModel request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<LoginResponseModel>> LoginAsync(LoginRequestModel request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmail(request.Email);
             if (user == null)
@@ -59,21 +85,20 @@ namespace HMS.Implementation.Services
                     Status = true,
                     Data = new LoginResponseModel
                     {
-                        Data = new LoginResponseData
-                        {
+                        
                             UserId = user.Id,
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
-                            Patient = user.Patient != null ? new Models.DTOs.Patients.PatientDto
+                            FullName = user.Patient != null ? user.Patient.FullName() : string.Empty,
+                        Patient = user.Patient != null ? new Models.DTOs.Patients.PatientDto
                             {
                                 Id = user.Patient.Id,
-                                FullName = user.Patient.FullName(),
 
 
                             } : null,
 
 
-                        }
+                       
                     }
                 };
             }
@@ -83,23 +108,21 @@ namespace HMS.Implementation.Services
                 {
                     Message = "Login successful",
                     Status = true,
-                    Data = new LoginResponseModel
-                    {
-                        Data = new LoginResponseData
+                   
+                        Data = new LoginResponseModel
                         {
                             UserId = user.Id,
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
+                            FullName = user.Doctor != null ? user.Doctor.FullName() : string.Empty,
                             Doctor = user.Doctor != null ? new Models.DTOs.Doctor.DoctorDto
                             {
                                 Id = user.Doctor.Id,
-                                FullName = user.Doctor.FullName(),
                             } : null,
 
 
 
                         }
-                    }
                 };
             }
 
@@ -109,14 +132,14 @@ namespace HMS.Implementation.Services
                 Status = true,
                 Data = new LoginResponseModel
                 {
-                    Data = new LoginResponseData
-                    {
                         UserId = user.Id,
                         Email = user.Email,
                         Roles = role.Select(r => new RoleDto { Name = role }).ToList(),
-
-
-                    }
+                        FullName = user.Admin != null ? user.Admin.FullName() : string.Empty,
+                    Admin = user.Admin != null ? new Models.DTOs.AdminDto
+                        {
+                            Id = user.Admin.Id,
+                        } : null,
                 }
             };
         }

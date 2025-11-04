@@ -1,6 +1,7 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
 using HMS.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace HMS.Implementation.Repositories
 {
@@ -17,5 +18,6 @@ namespace HMS.Implementation.Repositories
             return entity;
 
         }
+
     }
 }

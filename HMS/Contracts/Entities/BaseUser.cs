@@ -12,6 +12,7 @@ namespace HMS.Contracts.Entities
         public string PhoneNumber { get; set; }
         public string FullName()
         {
-            return $"{FirstName}{LastName}";
+            return $"{FirstName} {LastName}";
         }
+    }
 }

@@ -3,6 +3,7 @@ using HMS.Implementation.Repositories;
 using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
 using HMS.Persistence.Context;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,27 +50,14 @@ builder.Services.AddScoped<IRoleStore<Role>, RoleStore>();
 builder.Services.AddIdentity<User, Role>()
     .AddDefaultTokenProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        //ValidIssuer = builder.Configuration["JwtTokenSettings:TokenIssuer"],
-        //ValidAudience = builder.Configuration["JwtTokenSettings:TokenIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtTokenSettings:TokenKey"]))
-    };
-    options.RequireHttpsMetadata = false;
-});
-builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-                o.TokenLifespan = TimeSpan.FromHours(3));
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(config =>
+  {
+      config.LoginPath = "/User/login";
+      config.Cookie.Name = "HMS";
+      config.LogoutPath = "/User/logout";
+  });
+builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
@@ -92,8 +80,9 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=User}/{action=Login}/{id?}")
     .WithStaticAssets();
+
 
 
 app.Run();

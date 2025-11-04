@@ -1,6 +1,7 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
 using HMS.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace HMS.Implementation.Repositories
 {
@@ -20,6 +21,12 @@ namespace HMS.Implementation.Repositories
         public Task<List<Doctor>> GetDoctorsBySpeciality(string specialityName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<int> GetDoctorCounts()
+        {
+            return await _hmsContext.Set<Doctor>()
+                .CountAsync();
         }
     }
 }
