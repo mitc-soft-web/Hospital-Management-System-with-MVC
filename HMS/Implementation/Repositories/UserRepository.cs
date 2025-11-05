@@ -43,6 +43,7 @@ namespace HMS.Implementation.Repositories
             return await _hmsContext.Set<User>()
                 .Include(u => u.UserRoles)
                 .ThenInclude(u => u.Role)
+                .Include(p => p.Admin)
                 .Include(d => d.Doctor)
                 .Include(p => p.Patient)
                 .ThenInclude(p => p.PatientDetail)

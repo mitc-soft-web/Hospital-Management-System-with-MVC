@@ -1,0 +1,79 @@
+﻿
+@{
+    Layout = "_AdminLayout";
+}
+
+@model HMS.Models.DTOs.Specialty.CreateSpecialtyRequestModel
+@using HMS.Models.Enums
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="~/styles/register.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-body">
+            <div class="upper">CREATE SPECIALITY</div>
+            <div class="lower">
+                <form asp-action="Create" asp-controller="Speciality">
+                    <div id="first-section">
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Speciality Name: </label></div>
+                                <div><input type="text" id="description" asp-for="Name" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">Description: </label></div>
+                                <div><input type="text" id="last-name" asp-for="Description" class="tInput" required></div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Position: </label></div>
+                                <div>
+                                    <select asp-for="Position" asp-items="@Html.GetEnumSelectList(typeof(Position))" required>
+                                    </select>
+                                </div>
+                            </div>
+                          
+                        </div>
+                       
+                       
+                        
+                      
+                        <button id="first-next" class="next first-btn">Submit</button>
+                    </div>
+
+
+                    @* <div id="second-section" class="hidden">
+                        
+                        
+                    
+                        <div class="middle-btn">
+                            <button id="first-previous" class="next">Previous</button>
+                            <button id="second-next" class="next">Next</button>
+                        </div>
+                    </div>
+                    <div id="third-section" class="hidden">
+                        <p id="span-error-message" class="hidden"></p>
+             
+                       
+                        <button id="last-previous" class="last-previous">Previous</button>
+                        <div class="submit"><input id="register-btn" type="submit" value="Create"></div>
+                    </div> *@
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/register.js"></script>
+</body>
+
+</html>

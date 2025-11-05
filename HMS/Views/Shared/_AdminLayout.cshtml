@@ -152,7 +152,7 @@
 								<img src="~/assets1/img/profiles/avatar-01.jpg" alt="User Image" class="avatar-img rounded-circle">
 							</div>
 							<div class="user-text">
-								<h6>Ryan Taylor</h6>
+								<h6>@User.Identity?.Name</h6>
 								<p class="text-muted mb-0">Administrator</p>
 							</div>
 						</div>
@@ -182,9 +182,14 @@
 						<li>
 							<a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Appointments</span></a>
 						</li>
+						
 						<li>
-							<a href="specialities.html"><i class="fe fe-users"></i> <span>Specialities</span></a>
+								<a asp-controller="Speciality" asp-action="Index"><i class="fe fe-users"></i> <span>Specialities</span></a>
 						</li>
+						<li>
+								<a asp-controller="Speciality" asp-action="Create"><i class="fe fe-users"></i> <span>Add New Speciality</span></a>
+						</li>
+						
 						<li>
 							<a href="doctor-list.html"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
 						</li>

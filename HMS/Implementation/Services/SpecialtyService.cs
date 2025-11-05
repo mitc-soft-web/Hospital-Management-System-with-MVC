@@ -10,12 +10,15 @@ namespace HMS.Implementation.Services
     {
         private readonly ISpecialityRepository _specialityRepository;
         private readonly ILogger<SpecialtyService> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public SpecialtyService(ISpecialityRepository specialityRepository,
+            IUnitOfWork unitOfWork,
             ILogger<SpecialtyService> logger)
         {
             _logger = logger;
             _specialityRepository = specialityRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<BaseResponse<bool>> CreateAsync(CreateSpecialtyRequestModel request)
         {
@@ -37,6 +40,8 @@ namespace HMS.Implementation.Services
             };
 
             var createSpecialty = await _specialityRepository.Add(speciality);
+            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+
             if (createSpecialty != null)
             {
                 return new BaseResponse<bool>
@@ -70,19 +75,19 @@ namespace HMS.Implementation.Services
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResponse<IReadOnlyList<SpecialtyDto>>> GetSpecialitiesAsync(CancellationToken cancellationToken)
+        public async Task<BaseResponse<IEnumerable<SpecialtyDto>>> GetSpecialitiesAsync(CancellationToken cancellationToken)
         {
             var specialities = await _specialityRepository.GetAll<Speciality>();
             if (!specialities.Any())
             {
-                return new BaseResponse<IReadOnlyList<SpecialtyDto>>
+                return new BaseResponse<IEnumerable<SpecialtyDto>>
                 {
                     Message = "No data found",
                     Status = false
                 };
             }
 
-            return new BaseResponse<IReadOnlyList<SpecialtyDto>>
+            return new BaseResponse<IEnumerable<SpecialtyDto>>
             {
                 Message = "Data fetched successfully",
                 Status = true,

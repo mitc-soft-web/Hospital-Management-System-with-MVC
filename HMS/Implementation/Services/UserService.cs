@@ -89,16 +89,10 @@ namespace HMS.Implementation.Services
                             UserId = user.Id,
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
-                            FullName = user.Patient != null ? user.Patient.FullName() : string.Empty,
-                        Patient = user.Patient != null ? new Models.DTOs.Patients.PatientDto
-                            {
-                                Id = user.Patient.Id,
+                            FirstName = user.Patient != null ?  $"{user.Patient.FirstName}" : string.Empty,
 
 
-                            } : null,
 
-
-                       
                     }
                 };
             }
@@ -114,32 +108,24 @@ namespace HMS.Implementation.Services
                             UserId = user.Id,
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
-                            FullName = user.Doctor != null ? user.Doctor.FullName() : string.Empty,
-                            Doctor = user.Doctor != null ? new Models.DTOs.Doctor.DoctorDto
-                            {
-                                Id = user.Doctor.Id,
-                            } : null,
+                            FirstName = user.Doctor != null ?  $"{user.Doctor.FirstName}" : string.Empty,
 
 
 
                         }
                 };
             }
-
             return new BaseResponse<LoginResponseModel>
             {
                 Message = "Login successful",
                 Status = true,
                 Data = new LoginResponseModel
                 {
-                        UserId = user.Id,
-                        Email = user.Email,
-                        Roles = role.Select(r => new RoleDto { Name = role }).ToList(),
-                        FullName = user.Admin != null ? user.Admin.FullName() : string.Empty,
-                    Admin = user.Admin != null ? new Models.DTOs.AdminDto
-                        {
-                            Id = user.Admin.Id,
-                        } : null,
+                    UserId = user.Id,
+                    Email = user.Email,
+                    Roles = role.Select(r => new RoleDto { Name = role }).ToList(),
+                    FirstName = user.Admin != null ?  $"{user.Admin.FirstName}" : string.Empty,
+
                 }
             };
         }

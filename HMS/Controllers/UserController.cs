@@ -2,6 +2,7 @@
 using HMS.Models.DTOs.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -23,6 +24,8 @@ namespace HMS.Controllers
 
         public IActionResult StaffIndex()
         {
+
+            Console.WriteLine(User.Identity?.Name);
             return View();
         }
 
@@ -42,7 +45,7 @@ namespace HMS.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, loginResponse.Data.FullName),
+                    new Claim(ClaimTypes.Name, loginResponse.Data.FirstName),
                     new Claim(ClaimTypes.Email, loginResponse.Data.Email),
                     new Claim(ClaimTypes.NameIdentifier, loginResponse.Data.UserId.ToString()),
                 };
@@ -54,13 +57,10 @@ namespace HMS.Controllers
                 }
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authenticationProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15),
-                };
+                var authenticationProperties = new AuthenticationProperties();
+                
                 var principal = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal, authenticationProperties);
                 if (checkRole == "Patient")
                 {
                     return RedirectToAction("Index", "Patient");
@@ -70,11 +70,12 @@ namespace HMS.Controllers
                     return RedirectToAction("Index", "Doctor");
                 }
                 return RedirectToAction("StaffIndex", "User");
+
             }
             else
             {
                 ViewBag.ErrorMessage = loginResponse.Message;
-                return View();
+                return View(model);
             }
            
         }

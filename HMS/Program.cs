@@ -56,6 +56,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
       config.LoginPath = "/User/login";
       config.Cookie.Name = "HMS";
       config.LogoutPath = "/User/logout";
+      config.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+      config.SlidingExpiration = true;
   });
 builder.Services.AddAuthorization();
 
@@ -71,6 +73,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
