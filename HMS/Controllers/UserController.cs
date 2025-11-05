@@ -24,8 +24,6 @@ namespace HMS.Controllers
 
         public IActionResult StaffIndex()
         {
-
-            Console.WriteLine(User.Identity?.Name);
             return View();
         }
 
@@ -46,6 +44,7 @@ namespace HMS.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, loginResponse.Data.FirstName),
+                    new Claim(ClaimTypes.GivenName, loginResponse.Data.FullName),
                     new Claim(ClaimTypes.Email, loginResponse.Data.Email),
                     new Claim(ClaimTypes.NameIdentifier, loginResponse.Data.UserId.ToString()),
                 };
@@ -58,7 +57,6 @@ namespace HMS.Controllers
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authenticationProperties = new AuthenticationProperties();
-                
                 var principal = new ClaimsPrincipal(claimsIdentity);
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal, authenticationProperties);
                 if (checkRole == "Patient")

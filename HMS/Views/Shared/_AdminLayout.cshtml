@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
 	Layout = null;
 }
 
@@ -153,7 +154,7 @@
 							</div>
 							<div class="user-text">
 								<h6>@User.Identity?.Name</h6>
-								<p class="text-muted mb-0">Administrator</p>
+								<p class="text-muted mb-0">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</p>
 							</div>
 						</div>
 						<a class="dropdown-item" href="profile.html">My Profile</a>
@@ -177,18 +178,24 @@
 							<span>Main</span>
 						</li>
 						<li>
-							<a href="index.html"><i class="fe fe-home"></i> <span>Dashboard</span></a>
+							<a asp-controller="User" asp-action="StaffIndex" ><i class="fe fe-home"></i> <span>Dashboard</span></a>
 						</li>
 						<li>
 							<a href="appointment-list.html"><i class="fe fe-layout"></i> <span>Appointments</span></a>
 						</li>
 						
-						<li>
-								<a asp-controller="Speciality" asp-action="Index"><i class="fe fe-users"></i> <span>Specialities</span></a>
+						<li class="submenu">
+							<a href="#"><i class="fe fe-users"></i> <span>Specialities</span> <span class="menu-arrow"></span></a>
+							<ul style="display: none;">
+								<li>
+									<a asp-controller="Speciality" asp-action="Index">All Specialities</a>
+								</li>
+								<li>
+									<a asp-controller="Speciality" asp-action="Create">Add New Speciality</a>
+								</li>
+							</ul>
 						</li>
-						<li>
-								<a asp-controller="Speciality" asp-action="Create"><i class="fe fe-users"></i> <span>Add New Speciality</span></a>
-						</li>
+
 						
 						<li>
 							<a href="doctor-list.html"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
@@ -297,7 +304,7 @@
 						<div class="col">
 							<h3 class="page-title">Profile</h3>
 							<ul class="breadcrumb">
-								<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+								<li class="breadcrumb-item"><a asp-controller="User" asp-action="StaffIndex">Dashboard</a></li>
 								<li class="breadcrumb-item active">Profile</li>
 							</ul>
 						</div>
@@ -315,10 +322,13 @@
 									</a>
 								</div>
 								<div class="col ml-md-n2 profile-user-info">
-									<h4 class="user-name mb-0">Ryan Taylor</h4>
-									<h6 class="text-muted">ryantaylor@admin.com</h6>
-									<div class="user-Location"><i class="fa fa-map-marker"></i> Florida, United States</div>
-									<div class="about-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+									<h4 class="user-name mb-0">@User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value</h4>
+									<h6 class="text-muted">
+										@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value
+                                        
+                                    </h6>
+                                    <div class="user-Location"><i class="fa fa-map-marker"></i> No.5, Adebayo Street, Lagos State, Nigeria.</div>
+									<div class="about-text"> <i>An experienced IT professional with a strong background in software engineering and healthcare technology. The HMS Admin is responsible for overseeing system operations, ensuring data security, and maintaining efficient communication between hospital departments. With expertise in .NET development and system administration, they blend technical precision with managerial insight to keep the hospital’s digital infrastructure running seamlessly.</i></div>
 								</div>
 								<div class="col-auto profile-btn">
 

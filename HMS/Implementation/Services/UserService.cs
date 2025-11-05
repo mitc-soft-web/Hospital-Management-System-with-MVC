@@ -110,8 +110,6 @@ namespace HMS.Implementation.Services
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
                             FirstName = user.Doctor != null ?  $"{user.Doctor.FirstName}" : string.Empty,
 
-
-
                         }
                 };
             }
@@ -125,6 +123,7 @@ namespace HMS.Implementation.Services
                     Email = user.Email,
                     Roles = role.Select(r => new RoleDto { Name = role }).ToList(),
                     FirstName = user.Admin != null ?  $"{user.Admin.FirstName}" : string.Empty,
+                    FullName = user.Admin != null ?  $"{user.Admin.FullName()}" : string.Empty,
 
                 }
             };
