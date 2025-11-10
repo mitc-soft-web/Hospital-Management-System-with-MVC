@@ -5,8 +5,8 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-    buildCommand: docker build -t HMS .
-    startCommand: docker run -p 10000:80 HMS
+    buildCommand: docker build -t hms .
+    startCommand: docker run -p 10000:80 hms
     envVars:
       - key: DB_HOST
         fromDatabase:
@@ -28,3 +28,11 @@ services:
         fromDatabase:
           name: hms-db
           property: password
+
+databases:
+  - name: hms-db
+    databaseName: hmsdb
+    user: postgres
+    password: strongpassword123
+    plan: free
+    region: oregon
