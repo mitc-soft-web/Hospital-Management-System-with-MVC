@@ -7,16 +7,4 @@ services:
     autoDeploy: true
     buildCommand: docker build -t hms .
     startCommand: docker run -p 10000:80 hms
-    envVars:
-      - key: ConnectionStrings__HmsConnection
-        fromDatabase:
-          name: hms-db
-          property: connectionString
-        
-databases:
-  - name: hms-db
-    databaseName: hmsdb
-    user: postgres
-    password: strongpassword123
-    plan: free
-    region: oregon
+    
