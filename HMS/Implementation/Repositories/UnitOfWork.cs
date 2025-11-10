@@ -1,5 +1,7 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HMS.Implementation.Repositories
 {
@@ -11,6 +13,12 @@ namespace HMS.Implementation.Repositories
         {
             _hmsContext = hmsContext ?? throw new ArgumentNullException(nameof(hmsContext));
         }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _hmsContext.Database.BeginTransactionAsync();
+        }
+
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             return await _hmsContext.SaveChangesAsync(cancellationToken);

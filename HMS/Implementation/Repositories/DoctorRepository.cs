@@ -13,9 +13,14 @@ namespace HMS.Implementation.Repositories
 
         }
 
-        public Task<IReadOnlyList<Doctor>> GetAllDoctorsAndTheirSpecialities()
+        public async Task<IReadOnlyList<Doctor>> GetAllDoctorsAndTheirSpecialities()
         {
-            throw new NotImplementedException();
+            return await _hmsContext.Set<Doctor>()
+                .Include(d => d.User)
+                .Include(d => d.DoctorSpecialities)
+                .ThenInclude(ds => ds.Speciality)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public Task<List<Doctor>> GetDoctorsBySpeciality(string specialityName)
@@ -27,6 +32,16 @@ namespace HMS.Implementation.Repositories
         {
             return await _hmsContext.Set<Doctor>()
                 .CountAsync();
+        }
+
+        public async Task<Doctor> GetDoctorByIdAsync(Guid doctorId)
+        {
+            return await _hmsContext.Set<Doctor>()
+                .Include(d => d.User)
+                .Include(d => d.DoctorSpecialities)
+                .ThenInclude(ds => ds.Speciality)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == doctorId);
         }
     }
 }

@@ -49,11 +49,6 @@ namespace HMS.Implementation.Services
                 };
             }
 
-            var patientUser = new User
-            {
-                Email = request.Email,
-            };
-
             if (request.PasswordHash != request.ConfirmPassword) return new BaseResponse<bool>
             {
                 Message = "Password doesnt match!",
@@ -63,86 +58,110 @@ namespace HMS.Implementation.Services
             (var passwordResult, var message) = ValidatePassword(request.PasswordHash);
             if (!passwordResult) return new BaseResponse<bool> { Message = message, Status = false };
 
-            patientUser.PasswordHash = _identityService.GetPasswordHash(request.PasswordHash);
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
 
-            var newUser = await _userManager.CreateAsync(patientUser);
-            if (newUser == null)
+            try
             {
-                _logger.LogError("User Creation unsuccessful");
-                return new BaseResponse<bool>
+                var patientUser = new User
                 {
-                    Message = "User Creation unsuccessful",
-                    Status = false
+                    Email = request.Email,
+                    PasswordHash = _identityService.GetPasswordHash(request.PasswordHash)
                 };
 
-            }
-            var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
-
-            var userRoleNames = roles.Select(r => r.Name).ToList();
-
-            var result = await _userManager.AddToRolesAsync(patientUser, userRoleNames);
-            if (!result.Succeeded)
-            {
-                _logger.LogError("Unable to add user to roles");
-                return new BaseResponse<bool>
+                var newUser = await _userManager.CreateAsync(patientUser);
+                if (newUser == null)
                 {
-                    Message = "Unable to add user to roles",
-                    Status = false
-                };
-            }
+                    _logger.LogError("User Creation unsuccessful");
+                    return new BaseResponse<bool>
+                    {
+                        Message = "User Creation unsuccessful",
+                        Status = false
+                    };
 
-            var userRoles = await _userManager.GetRolesAsync(patientUser);
+                }
+                var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
 
-            //var token = _identityService.GenerateToken(patientUser, userRoles);
+                var userRoleNames = roles.Select(r => r.Name).ToList();
 
-            if (!result.Succeeded)
-            {
-                throw new Exception($"Unable to add patient to roles");
-            }
-
-            var patient = new Patient
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Address = request.Address,
-                Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth,
-                PhoneNumber = request.PhoneNumber,
-                MedicalRecordNumber = GeneratePatientMedicalRecordNumber(request.FirstName, request.LastName),
-                UserId = patientUser.Id,
-                DateCreated = DateTime.UtcNow,
-                PatientDetail = new PatientDetail
+                var result = await _userManager.AddToRolesAsync(patientUser, userRoleNames);
+                if (!result.Succeeded)
                 {
-                    Allergies = request.Allergies,
-                    BloodGroup = request.BloodGroup,
-                    EmergencyContact = request.EmergencyContact,
-                    Genotype = request.Genotype,
-                    MedicalHistory = request.MedicalHistory,
-                    DateCreated = DateTime.UtcNow,
+                    _logger.LogError("Unable to add user to roles");
+                    return new BaseResponse<bool>
+                    {
+                        Message = "Unable to add user to roles",
+                        Status = false
+                    };
                 }
 
+                var userRoles = await _userManager.GetRolesAsync(patientUser);
 
-            };
+                //var token = _identityService.GenerateToken(patientUser, userRoles);
 
-            patient.FullName();
-            var createPatient = await _patientRepository.Add(patient);
-            await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+                if (!result.Succeeded)
+                {
+                    throw new Exception($"Unable to add patient to roles");
+                }
 
-            if (createPatient == null)
-            {
-                _logger.LogError("Patient couldn't be added");
+                var patient = new Patient
+                {
+                    
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Address = request.Address,
+                    Gender = request.Gender,
+                    DateOfBirth = request.DateOfBirth,
+                    PhoneNumber = request.PhoneNumber,
+                    MedicalRecordNumber = GeneratePatientMedicalRecordNumber(request.FirstName, request.LastName),
+                    UserId = patientUser.Id,
+                    DateCreated = DateTime.UtcNow,
+                    PatientDetail = new PatientDetail
+                    {
+                        Allergies = request.Allergies,
+                        BloodGroup = request.BloodGroup,
+                        EmergencyContact = request.EmergencyContact,
+                        Genotype = request.Genotype,
+                        MedicalHistory = request.MedicalHistory,
+                        DateCreated = DateTime.UtcNow,
+                    }
+
+
+                };
+
+                var createPatient = await _patientRepository.Add(patient);
+                await _unitOfWork.SaveChangesAsync(CancellationToken.None);
+
+                if (createPatient == null)
+                {
+                    _logger.LogError("Patient couldn't be added");
+                    return new BaseResponse<bool>
+                    {
+                        Message = "Patient couldn't be added",
+                        Status = false,
+                    };
+                }
+
+                await transaction.CommitAsync();
+                _logger.LogInformation("Patient added successfully");
                 return new BaseResponse<bool>
                 {
-                    Message = "Patient couldn't be added",
-                    Status = false,
+                    Message = "Patient added successfully",
+                    Status = true
                 };
             }
-            _logger.LogInformation("Patient added successfully");
-            return new BaseResponse<bool>
+            catch (Exception ex)
             {
-                Message = "Patient added successfully",
-                Status = true
-            };
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error  creating patient, rolling back.....");
+                return new BaseResponse<bool>
+                {
+                    Message = "Error  creating patient, rolling back.....",
+                    Status = false
+                };
+            }
+
+
+
         }
 
         public async Task<BaseResponse<bool>> DeleteAsync(Guid patientId)
@@ -211,7 +230,7 @@ namespace HMS.Implementation.Services
 
         }
 
-        private string GeneratePatientMedicalRecordNumber(string firstName, string lastName)
+        private static string GeneratePatientMedicalRecordNumber(string firstName, string lastName)
         {
             string first = firstName.Substring(0, 2).ToString().Trim().ToUpper();
             string second = lastName.Substring(1, 2).ToString().Trim().ToUpper();

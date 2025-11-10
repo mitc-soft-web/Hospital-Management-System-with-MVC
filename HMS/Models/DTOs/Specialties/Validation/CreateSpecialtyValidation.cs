@@ -7,7 +7,6 @@ namespace HMS.Models.DTOs.Specialty.Validation
         public CreateSpecialtyValidation()
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
-            RuleFor(x => x.Position).NotEmpty().WithMessage("Position is required");
 
         }
     }

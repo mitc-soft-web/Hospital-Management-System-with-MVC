@@ -41,7 +41,7 @@ namespace HMS.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateAppointmentRequestModel model)
         {

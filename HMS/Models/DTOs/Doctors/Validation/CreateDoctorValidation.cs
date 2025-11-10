@@ -16,6 +16,7 @@ namespace HMS.Models.DTOs.Doctor.Validation
             RuleFor(x => x.Gender).NotEmpty().WithMessage("Gender is required");
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phone number is required");
             RuleFor(x => x.Qualification).NotEmpty().WithMessage("Qualification required");
+            RuleFor(x => x.Position).NotEmpty().IsInEnum().WithMessage("Position required");
             RuleFor(x => x.SpecialityIds).NotEmpty().WithMessage("Speciality required");
             RuleFor(x => x.YearsOfExperience).NotEmpty().WithMessage("Years of experience required");
         }

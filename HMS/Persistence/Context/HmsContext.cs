@@ -1,6 +1,8 @@
 ﻿using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 
 namespace HMS.Persistence.Context
 {
@@ -8,9 +10,17 @@ namespace HMS.Persistence.Context
     {
         public HmsContext(DbContextOptions<HmsContext> options) : base(options)
         {
-
-
+           
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .UseNpgsql("Host=localhost;Port=5432;Database=HospitalManagementSystem;Username=postgres;Password=dev_abass@2021;")
+                .ConfigureWarnings(w =>
+                    w.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -19,7 +29,13 @@ namespace HMS.Persistence.Context
             .WithOne(u => u.Admin)
             .HasForeignKey<Admin>(a => a.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+                builder.Entity<Admin>()
+           .Property(a => a.Gender)
+           .HasConversion<byte>();
+
             SeedAdminData(builder);
+
 
             SeedRoleData(builder);
 
@@ -88,46 +104,53 @@ namespace HMS.Persistence.Context
 
         private void SeedAdminData(ModelBuilder modelBuilder)
         {
-            var adminRoleId = Guid.NewGuid();
-            var adminUserId = Guid.NewGuid();
+            //var adminRoleId = Guid.NewGuid();
+            //var adminUserId = Guid.NewGuid();
+
+            var adminRoleId = new Guid("d2719e67-52f4-4f9c-bdb2-123456789abc");
+            var adminUserId = new Guid("c8f2e5ab-9f34-4b97-8b7c-1a5e86c77e42");
 
             var role = new Role
             {
                 Id = adminRoleId,
                 Name = "Admin",
                 Description = "Has full permissions",
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc)
             };
 
+            var hasher = new PasswordHasher<object>();
+            var passwordHash = hasher.HashPassword(null, "Admin@001");
             var adminUser = new User
             {
                 Id = adminUserId,
                 Email = "Admin001@gmail.com",
+                PasswordHash = "AQAAAAIAAYagAAAAEJjieFsJGM2Xgr+WpuS3juOABbBCvbqSvpym4WzP/SDMuvGz6qH+EFgm19l8SUHUGA==",
                 EmailConfirmed = true,
-                DateCreated = DateTime.UtcNow,
+                DateCreated  = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc),
+               
+
             };
-            var hasher = new PasswordHasher<User>();
-            adminUser.PasswordHash = hasher.HashPassword(adminUser, "Admin@001");
+            
 
             var userRole = new UserRole
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("7ad9b1e1-4c23-46a2-b8e4-219ab417f71f"),
                 RoleId = adminRoleId,
                 UserId = adminUserId,
-                DateCreated = DateTime.UtcNow
+                DateCreated = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc)
             };
 
             var adminProfile = new Admin
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("f0e25b73-7d1a-4c19-8b2f-09a3efb40d12"),
                 FirstName = "Admin",
                 LastName = "Hms",
                 Address = "Lagos State",
                 Gender = Models.Enums.Gender.Male,
                 PhoneNumber = "+23470456780",
-                DateOfBirth = new DateTime(1994, 04, 15),
+                DateOfBirth = DateTime.SpecifyKind(new DateTime(1997, 11, 10), DateTimeKind.Utc),
                 UserId = adminUserId,
-                DateCreated = DateTime.UtcNow
+                DateCreated = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc),
             };
 
             modelBuilder.Entity<Role>().HasData(role);
@@ -142,17 +165,17 @@ namespace HMS.Persistence.Context
             {
                 new Role
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("a45c9e02-1f0b-4e57-b3d8-9b77b4a302be"),
                     Name = "Doctor",
                     Description = "Can manage appointments and patient records",
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc),
                 },
                 new Role
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("6e3d4978-dcb0-42ea-9c48-7f6209d4a871"),
                     Name = "Patient",
                     Description = "Can view appointments",
-                    DateCreated = DateTime.UtcNow,
+                    DateCreated = DateTime.SpecifyKind(new DateTime(2025, 11, 10), DateTimeKind.Utc),
                 }
             };
 

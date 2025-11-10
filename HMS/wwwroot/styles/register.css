@@ -88,3 +88,93 @@ button{
     padding: 10px 40%;
     cursor: pointer;
 }
+
+.custom-multiselect {
+    position: relative;
+    max-width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.cm-selected {
+    min-height: 44px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    cursor: text;
+    background: #fff;
+}
+
+.cm-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.cm-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 16px;
+    background: #f1f5f9;
+    font-size: 0.9rem;
+}
+
+    .cm-tag .remove {
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 4px;
+    }
+
+.cm-search {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+}
+
+.cm-caret {
+    margin-left: auto;
+    padding-left: 8px;
+    color: #666;
+}
+
+.cm-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    max-height: 220px;
+    overflow: auto;
+    display: none;
+}
+
+.cm-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .cm-option:hover {
+        background: #f7fafc;
+    }
+
+    .cm-option input[type="checkbox"] {
+        pointer-events: none;
+    }
+/* checkbox is just visual here */
+.cm-no-results {
+    padding: 10px 14px;
+    color: #666;
+}

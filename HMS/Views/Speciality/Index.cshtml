@@ -323,33 +323,43 @@
 											</tr>
 										</thead>
 										<tbody>
-											@foreach(var speciality in Model.Data)
+											@if(Model?.Data != null && Model.Data.Any())
 											{
-												<tr>
-													<td>#SP001</td>
+												@foreach (var speciality in Model.Data)
+												{
+													<tr>
+														<td>#SP001</td>
 
-													<td>
-														<h2 class="table-avatar">
-															<a href="profile.html" class="avatar avatar-sm mr-2">
-																<img class="avatar-img" src="~/assets/img/specialities/specialities-01.png" alt="Speciality">
-															</a>
-															<a href="profile.html">@Html.DisplayFor(s => speciality.Name)</a>
-														</h2>
-													</td>
+														<td>
+															<h2 class="table-avatar">
+																<a href="profile.html" class="avatar avatar-sm mr-2">
+																	<img class="avatar-img" src="~/assets/img/specialities/specialities-01.png" alt="Speciality">
+																</a>
+																<a href="profile.html">@Html.DisplayFor(s => speciality.Name)</a>
+															</h2>
+														</td>
 
-													<td class="text-right">
-														<div class="actions">
-															<a class="btn btn-sm bg-success-light" data-toggle="modal" href="#edit_specialities_details">
-																<i class="fe fe-pencil"></i> Edit
-															</a>
-															<a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
-																<i class="fe fe-trash"></i> Delete
-															</a>
-														</div>
-													</td>
-												</tr>
-											
+														<td class="text-right">
+															<div class="actions">
+																<a class="btn btn-sm bg-success-light" data-toggle="modal" href="#edit_specialities_details">
+																	<i class="fe fe-pencil"></i> Edit
+																</a>
+																<a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
+																	<i class="fe fe-trash"></i> Delete
+																</a>
+															</div>
+														</td>
+													</tr>
+
+												}
 											}
+											else
+											{
+												<div class="text-center mt-4">
+													<p>No specialties found.</p>
+												</div>
+											}
+
 											
 										</tbody>
 									</table>

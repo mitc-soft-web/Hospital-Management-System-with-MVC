@@ -34,7 +34,6 @@ namespace HMS.Implementation.Services
             var speciality = new Speciality
             {
                 Name = request.Name,
-                Position = request.Position,
                 Description = request.Description,
                 DateCreated = DateTime.UtcNow,
             };
@@ -95,7 +94,6 @@ namespace HMS.Implementation.Services
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    Position = s.Position,
                     Description = s.Description,
                     DateCreated = s.DateCreated,
                 }).ToList()

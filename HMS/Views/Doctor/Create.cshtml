@@ -1,0 +1,311 @@
+﻿@using HMS.Models.Enums
+@{
+    Layout = null;
+}
+
+@model HMS.Models.DTOs.Doctor.CreateDoctorRequestModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create </title>
+    <link rel="stylesheet" href="~/styles/register.css">
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        @if (!string.IsNullOrEmpty(ViewBag.Alert as string))
+        {
+            <div id="responseAlert" class="alert alert-@ViewBag.AlertType text-center" role="alert">
+                @ViewBag.Alert
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    setTimeout(() => {
+                        const alert = document.getElementById('responseAlert');
+                        if (alert) {
+                            alert.style.transition = "opacity 0.6s ease";
+                            alert.style.opacity = 0;
+                            setTimeout(() => alert.remove(), 600);
+                        }
+                    }, 4000);
+                });
+            </script>
+        }
+    </div>
+    <div class="container">
+        <div class="form-body">
+            <div class="upper">CREATE DOCTOR</div>
+            <div class="lower">
+                <form asp-action="Create" asp-controller="Doctor">
+                    <div id="first-section">
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">First Name: </label></div>
+                                <div><input type="text" id="first-name" asp-for="FirstName" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">LastName: </label></div>
+                                <div><input type="text" id="last-name" asp-for="LastName" class="tInput"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Email: </label></div>
+                                <div><input type="text" id="email" asp-for="Email" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">Address: </label></div>
+                                <div><input type="text" id="address" asp-for="Address" class="tInput"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Password: </label></div>
+                                <div><input type="password" id="password" asp-for="PasswordHash" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">Confirm Password: </label></div>
+                                <div><input type="password" id="password-confirm" asp-for="ConfirmPassword" class="tInput" required></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">PhoneNumber: </label></div>
+                                <div><input type="text" id="phone-number" asp-for="PhoneNumber" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">D.O.B: </label></div>
+                                <div><input type="date" id="date-of-birth" asp-for="DateOfBirth" class="tInput" required></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Years of Exp: </label></div>
+                                <div><input type="number" id="years-of-exp" asp-for="YearsOfExperience" class="tInput" required></div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">Qualification(s): separate with ',': </label></div>
+                                <div><input type="text" id="qualification" asp-for="Qualification" class="tInput"></div>
+                            </div>
+                        </div>
+
+                        <!-- Fix: Use unique IDs and correct asp-for for each select -->
+                        <div class="row">
+                            <label for="role-type">Roles</label>
+                            <select asp-for="RoleIds" asp-items="ViewBag.Roles" id="role-type" multiple style="display:none;"></select>
+                            <div class="custom-multiselect" data-target="#role-type">
+                                <div class="cm-selected" tabindex="0">
+                                    <div class="cm-tags"></div>
+                                    <input type="text" class="cm-search" placeholder="Search or type to add..." />
+                                    <div class="cm-caret">▾</div>
+                                </div>
+                                <div class="cm-dropdown">
+                                    <div class="cm-options"></div>
+                                </div>
+                            </div>
+
+                            <label for="speciality-type">Specialities</label>
+                            <select asp-for="SpecialityIds" asp-items="ViewBag.Specialities" id="speciality-type" multiple style="display:none;"></select>
+                            <div class="custom-multiselect" data-target="#speciality-type">
+                                <div class="cm-selected" tabindex="0">
+                                    <div class="cm-tags"></div>
+                                    <input type="text" class="cm-search" placeholder="Search or type to add..." />
+                                    <div class="cm-caret">▾</div>
+                                </div>
+                                <div class="cm-dropdown">
+                                    <div class="cm-options"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input">
+                                <div><label for="">Position: </label></div>
+                                <div>
+                                    <select asp-for="Position" asp-items="@Html.GetEnumSelectList(typeof(Position))" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <div><label for="">Gender: </label></div>
+                                <div>
+                                    <select asp-for="Gender" asp-items="@Html.GetEnumSelectList(typeof(Gender))" required>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            (function () {
+                              function initCustomMulti(el) {
+                                const targetSelector = el.getAttribute('data-target');
+                                const realSelect = document.querySelector(targetSelector);
+                                if (!realSelect) return;
+
+                                const dropdown = el.querySelector('.cm-dropdown');
+                                const optionsContainer = el.querySelector('.cm-options');
+                                const tagsContainer = el.querySelector('.cm-tags');
+                                const searchInput = el.querySelector('.cm-search');
+                                const selectedBox = el.querySelector('.cm-selected');
+
+                                // build option list from real select
+                                function buildOptions() {
+                                  optionsContainer.innerHTML = '';
+                                  const opts = Array.from(realSelect.options);
+                                  opts.forEach(opt => {
+                                    const row = document.createElement('div');
+                                    row.className = 'cm-option';
+                                    row.setAttribute('data-value', opt.value);
+
+                                    const checkbox = document.createElement('input');
+                                    checkbox.type = 'checkbox';
+                                    checkbox.checked = opt.selected;
+
+                                    const label = document.createElement('span');
+                                    label.textContent = opt.text;
+
+                                    row.appendChild(checkbox);
+                                    row.appendChild(label);
+                                    optionsContainer.appendChild(row);
+
+                                    row.addEventListener('click', () => {
+                                      opt.selected = !opt.selected;
+                                      checkbox.checked = opt.selected;
+                                      renderTags();
+                                    });
+                                  });
+
+                                  if (opts.length === 0) {
+                                    const no = document.createElement('div');
+                                    no.className = 'cm-no-results';
+                                    no.textContent = 'No options available';
+                                    optionsContainer.appendChild(no);
+                                  }
+                                }
+
+                                // render tags for selected items
+                                function renderTags() {
+                                  tagsContainer.innerHTML = '';
+                                  Array.from(realSelect.selectedOptions).forEach(opt => {
+                                    const tag = document.createElement('span');
+                                    tag.className = 'cm-tag';
+                                    tag.textContent = opt.text;
+
+                                    const rem = document.createElement('span');
+                                    rem.className = 'remove';
+                                    rem.innerHTML = '&times;';
+                                    rem.addEventListener('click', (e) => {
+                                      e.stopPropagation();
+                                      opt.selected = false;
+                                      // trigger change on underlying select (optional)
+                                      renderTags();
+                                    });
+
+                                    tag.appendChild(rem);
+                                    tagsContainer.appendChild(tag);
+                                  });
+
+                                  // update checkboxes in dropdown
+                                  Array.from(optionsContainer.querySelectorAll('.cm-option')).forEach(row => {
+                                    const v = row.getAttribute('data-value');
+                                    const checkbox = row.querySelector('input[type="checkbox"]');
+                                    const corresponding = realSelect.querySelector('option[value="'+v+'"]');
+                                    if (corresponding) checkbox.checked = corresponding.selected;
+                                  });
+
+                                  // When tags change, also trigger any change handlers bound to realSelect
+                                  const event = new Event('change', { bubbles: true });
+                                  realSelect.dispatchEvent(event);
+                                }
+
+                                // search filter
+                                function filterOptions() {
+                                  const q = searchInput.value.trim().toLowerCase();
+                                  const rows = optionsContainer.querySelectorAll('.cm-option');
+                                  let visible = 0;
+                                  rows.forEach(r => {
+                                    const text = r.textContent.toLowerCase();
+                                    if (text.indexOf(q) !== -1) {
+                                      r.style.display = 'flex';
+                                      visible++;
+                                    } else {
+                                      r.style.display = 'none';
+                                    }
+                                  });
+                                  if (visible === 0) {
+                                    if (!optionsContainer.querySelector('.cm-no-results')) {
+                                      const no = document.createElement('div');
+                                      no.className = 'cm-no-results';
+                                      no.textContent = 'No results';
+                                      optionsContainer.appendChild(no);
+                                    }
+                                  } else {
+                                    const no = optionsContainer.querySelector('.cm-no-results');
+                                    if (no) no.remove();
+                                  }
+                                }
+
+                                // toggle dropdown
+                                function toggleDropdown(show) {
+                                  dropdown.style.display = (show ? 'block' : 'none');
+                                  if (show) searchInput.focus();
+                                }
+
+                                // close when clicking outside
+                                document.addEventListener('click', (e) => {
+                                  if (!el.contains(e.target)) toggleDropdown(false);
+                                });
+
+                                selectedBox.addEventListener('click', (e) => {
+                                  toggleDropdown(dropdown.style.display !== 'block');
+                                });
+
+                                // keyboard: focus open
+                                selectedBox.addEventListener('keydown', (e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    toggleDropdown(dropdown.style.display !== 'block');
+                                  }
+                                  if (e.key === 'Backspace' && searchInput.value === '') {
+                                    // remove last selected
+                                    const selected = realSelect.selectedOptions;
+                                    if (selected.length) {
+                                      selected[selected.length - 1].selected = false;
+                                      renderTags();
+                                    }
+                                  }
+                                });
+
+                                searchInput.addEventListener('input', filterOptions);
+
+                                // initialize
+                                buildOptions();
+                                renderTags();
+                              }
+
+                              // auto-init for elements with .custom-multiselect
+                              document.addEventListener('DOMContentLoaded', () => {
+                                document.querySelectorAll('.custom-multiselect').forEach(initCustomMulti);
+                              });
+                            })();
+                        </script>
+
+
+                        <button id="first-next" class="next first-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/register.js"></script>
+</body>
+
+</html>

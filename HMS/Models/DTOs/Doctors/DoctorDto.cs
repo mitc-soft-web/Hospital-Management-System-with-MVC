@@ -1,4 +1,5 @@
-﻿using HMS.Models.Entities;
+﻿using HMS.Models.DTOs.Specialty;
+using HMS.Models.Entities;
 using HMS.Models.Enums;
 
 namespace HMS.Models.DTOs.Doctor
@@ -14,13 +15,14 @@ namespace HMS.Models.DTOs.Doctor
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public int YearsOfExperience { get; set; }
+        public Position Position { get; set; }
         public string Qualification { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
         public Guid Id { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
-        public ICollection<DoctorSpeciality> DoctorSpecialities { get; set; } = [];
+        public IList<string> DoctorSpecialities { get; set; } = [];
         public ICollection<Entities.Appointment> Appointments { get; set; } = [];
     }
 }

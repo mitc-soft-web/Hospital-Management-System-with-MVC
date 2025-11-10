@@ -51,6 +51,108 @@ namespace HMS.Implementation.Services
             throw new NotImplementedException();
         }
 
+        public async Task<BaseResponse<UserDto>> GetUserProfileByUserId(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetUserProfile(userId);
+            if (user == null)
+            {
+                return new BaseResponse<UserDto>
+                {
+                    Message = "User not found",
+                    Status = false
+                };
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? string.Empty;
+
+            if (role == "Patient")
+            {
+                return new BaseResponse<UserDto>
+                {
+                    Message = "Patient profile fetched",
+                    Status = true,
+                    Data = new UserDto
+                    {
+
+                        Id = user.Id,
+                        Email = user.Email,
+                        Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
+                        Patient = new Models.DTOs.Patients.PatientDto
+                        {
+                            Id = user.Patient.Id,
+                            FirstName = user.Patient.FirstName,
+                            FullName = $"{user.Patient.FirstName} {user.Patient.LastName}",
+                            Gender = user.Patient.Gender,
+                            MedicalRecordNumber = user.Patient.MedicalRecordNumber,
+                            PhoneNumber = user.Patient.PhoneNumber,
+                            DateOfBirth = user.Patient.DateOfBirth,
+                            Address = user.Patient.Address,
+                            PatientDetail = new PatientDetail
+                            {
+                                Genotype = user.Patient.PatientDetail.Genotype,
+                                MedicalHistory = user.Patient.PatientDetail.MedicalHistory,
+                                BloodGroup = user.Patient.PatientDetail.BloodGroup,
+                            }
+                        }
+                       
+
+
+
+
+                    }
+                };
+            }
+            if (role == "Doctor")
+            {
+                return new BaseResponse<UserDto>
+                {
+                    Message = "Doctor profile fetched",
+                    Status = true,
+
+                    Data = new UserDto
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
+                        Doctor = new Models.DTOs.Doctor.DoctorDto
+                        {
+                            FirstName = user.Doctor.FirstName,
+                            FullName = $"{user.Doctor.FirstName} {user.Doctor.LastName}",
+                            Gender = user.Doctor.Gender,
+                            PhoneNumber= user.Doctor.PhoneNumber,
+                            Position = user.Doctor.Position,
+                            Qualification = user.Doctor.Qualification,
+                            YearsOfExperience = user.Doctor.YearsOfExperience,
+                            DateOfBirth = user.Doctor.DateOfBirth,
+                            Address = user.Doctor.Address,
+                            DoctorSpecialities = user.Doctor.DoctorSpecialities.Select(d => d.Speciality.Name).ToList()
+                        }
+                       
+
+
+                    }
+                };
+            }
+            return new BaseResponse<UserDto>
+            {
+                Message = "Admin profile fetched",
+                Status = true,
+                Data = new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Roles = role.Select(r => new RoleDto { Name = role }).ToList(),
+                    Admin = new AdminDto
+                    {
+                        FullName = $"{user.Admin.FirstName} {user.Admin.LastName}"
+                    }
+
+                }
+            };
+
+
+        }
+
         public async Task<BaseResponse<LoginResponseModel>> LoginAsync(LoginRequestModel request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByEmail(request.Email);
@@ -90,6 +192,8 @@ namespace HMS.Implementation.Services
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
                             FirstName = user.Patient != null ?  $"{user.Patient.FirstName}" : string.Empty,
+                            FullName = user.Admin != null ? $"{user.Patient?.FullName()}" : string.Empty,
+
 
 
 
@@ -109,6 +213,8 @@ namespace HMS.Implementation.Services
                             Email = user.Email,
                             Roles = roles.Select(r => new RoleDto { Name = r }).ToList(),
                             FirstName = user.Doctor != null ?  $"{user.Doctor.FirstName}" : string.Empty,
+                            FullName = user.Admin != null ? $"{user.Doctor?.FullName()}" : string.Empty,
+
 
                         }
                 };

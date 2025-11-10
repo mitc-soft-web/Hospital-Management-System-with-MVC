@@ -27,12 +27,19 @@ namespace HMS.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult DoctorDashboard()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequestModel model)
@@ -65,7 +72,7 @@ namespace HMS.Controllers
                 }
                 else if (checkRole == "Doctor")
                 {
-                    return RedirectToAction("Index", "Doctor");
+                    return RedirectToAction("DoctorDashboard", "User");
                 }
                 return RedirectToAction("StaffIndex", "User");
 

@@ -52,7 +52,22 @@ namespace HMS.Implementation.Repositories
             
         }
 
-       
+        public async Task<User> GetUserProfile(Guid userId)
+        {
+            return await _hmsContext.Set<User>()
+                .Where(u => u.Id == userId)
+                .Include(a => a.Admin)
+                .Include(p => p.Patient)
+                .ThenInclude(p => p.PatientDetail)
+                .Include(d => d.Doctor)
+                .ThenInclude(d => d.DoctorSpecialities)
+                .ThenInclude(ds => ds.Speciality)
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                 .AsSplitQuery()
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
+        }
     }
 
 }

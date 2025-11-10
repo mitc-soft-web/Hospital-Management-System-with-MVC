@@ -4,7 +4,7 @@
 }
 
 @model HMS.Models.DTOs.Specialty.CreateSpecialtyRequestModel
-@using HMS.Models.Enums
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,11 +31,11 @@
                             </div>
                             <div class="input">
                                 <div><label for="">Description: </label></div>
-                                <div><input type="text" id="last-name" asp-for="Description" class="tInput" required></div>
+                                <div><input type="text" id="last-name" asp-for="Description" class="tInput"></div>
                             </div>
                         </div>
                         
-                        <div class="row">
+                        @* <div class="row">
                             <div class="input">
                                 <div><label for="">Position: </label></div>
                                 <div>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                           
-                        </div>
+                        </div> *@
                        
                        
                         

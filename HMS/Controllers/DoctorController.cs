@@ -3,34 +3,38 @@ using HMS.Models.DTOs.Doctor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Operations;
+using System.Security.Claims;
 
 namespace HMS.Controllers
 {
-    public class DoctorController : Controller
+    public class DoctorController(IDoctorService doctorService, ISpecialtyService specialtyService,
+        IRoleService roleService, ILogger<DoctorController> logger, IUserService userService) : Controller
     {
-        private readonly IDoctorService _doctorService;
-        private readonly ISpecialtyService _specialtyService;
+        private readonly IDoctorService _doctorService = doctorService ?? throw new ArgumentNullException(nameof(doctorService));
+        private readonly ISpecialtyService _specialtyService = specialtyService ?? throw new ArgumentNullException(nameof(specialtyService));
+        private readonly IRoleService roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
+        private readonly ILogger<DoctorController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
-        public DoctorController(IDoctorService doctorService, ISpecialtyService specialtyService)
-        {
-            _specialtyService = specialtyService ?? throw new ArgumentNullException(nameof(specialtyService));
-            _doctorService = doctorService ?? throw new ArgumentNullException(nameof(doctorService));
-
-        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var specialities = await _specialtyService.GetSpecialitiesAsync(CancellationToken.None);
+            var doctors = await _doctorService.GetDotorsAsync(CancellationToken.None);
 
-            return View(specialities);
+            return View(doctors);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            var roles = await _specialtyService.GetSpecialitiesAsync(CancellationToken.None);
-            ViewData["SpecialityIds"] = new SelectList(roles.Data, "Id", "Name");
+            var specialities = await _specialtyService.GetSpecialitiesAsync(CancellationToken.None);
+            ViewData["Specialities"] = new MultiSelectList(specialities.Data, "Id", "Name");
+
+            var roles = await roleService.GetRolesAsync(CancellationToken.None);
+            ViewData["Roles"] = new MultiSelectList(roles.Data, "Id", "Name");
 
             return View();
         }
@@ -40,13 +44,48 @@ namespace HMS.Controllers
         public async Task<IActionResult> Create(CreateDoctorRequestModel model)
         {
             var doctor = await _doctorService.CreateAsync(model);
-            if (!doctor.Status)
+            if (doctor.Status)
             {
-                ViewBag.Failed = "Doctor creation unsuccessful";
+                ViewBag.Alert = doctor.Status;
+                ViewBag.AlertType = "success";
+
+                return RedirectToAction("Index");
             }
-            ViewBag.Success = "Doctor created successfully";
+            else
+            {
+
+                ViewBag.Alert = doctor.Status;
+                ViewBag.AlertType = "danger";
+                return View();
+            }
+               
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Doctor")]
+        public async Task<IActionResult> DoctorProfile()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine(User.FindFirstValue(ClaimTypes.GivenName));
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("Login", "User");
+            }
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
+
+            var doctor = await _userService.GetUserProfileByUserId(userId, CancellationToken.None);
+
+            if (doctor == null || !doctor.Status) return NotFound(doctor.Message);
 
             return View(doctor);
+
+
+
+
         }
     }
 }

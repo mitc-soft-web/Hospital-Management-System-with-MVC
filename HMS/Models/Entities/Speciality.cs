@@ -8,8 +8,6 @@ namespace HMS.Models.Entities
         public string Name { get; set; }
         public string? Description { get; set; }
 
-        public Position Position { get; set; }
-
         public ICollection<DoctorSpeciality> DoctorSpecialities { get; set; } = [];
 
 

@@ -1,4 +1,5 @@
 ﻿using HMS.Contracts.Entities;
+using HMS.Models.Enums;
 
 namespace HMS.Models.Entities
 {
@@ -6,6 +7,7 @@ namespace HMS.Models.Entities
     {
 
         public int YearsOfExperience { get; set; }
+        public Position Position { get; set; }
         public string Qualification { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }

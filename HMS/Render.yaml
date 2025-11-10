@@ -1,0 +1,23 @@
+services:
+type: web 
+name: my-dotnet-app 
+env: dotnet 
+branch: main 
+plan: free 
+buildCommand: dotnet publish -c Release -o ./publish 
+startCommand: dotnet ./publish/HMS.dll 
+autoDeploy: true 
+
+envVars:
+- key: ConnectionStrings__DefaultConnection 
+fromDatabase: 
+- name: hms-db 
+property: DATABASE_URL
+
+databases:
+- name: hms-db 
+databaseName: hmsdb 
+user: postgres 
+password: strongpassword123 
+plan: free
+region: oregon

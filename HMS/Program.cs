@@ -12,6 +12,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var hasher = new PasswordHasher<object>();
+var hash = hasher.HashPassword(null, "Admin@001");
+Console.WriteLine(hash);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -39,10 +43,13 @@ builder.Services.Scan(scan => scan
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add Database
+//builder.Services.AddDbContext<HmsContext>(options =>
+//    options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
+//        new MySqlServerVersion(new Version(9, 0, 0))
+//    ));
+
 builder.Services.AddDbContext<HmsContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
-        new MySqlServerVersion(new Version(9, 0, 0))
-    ));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("HMSContext")));
 
 //builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IUserStore<User>, HMS.Identity.UserStore>();

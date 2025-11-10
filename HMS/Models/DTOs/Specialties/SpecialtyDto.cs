@@ -11,8 +11,6 @@ namespace HMS.Models.DTOs.Specialty
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Position Position { get; set; }
-
         public ICollection<DoctorSpeciality> DoctorSpecialities { get; set; } = [];
     }
 }

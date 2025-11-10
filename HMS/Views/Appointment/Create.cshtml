@@ -1,0 +1,78 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+
+@model HMS.Models.DTOs.Appointment.CreateAppointmentRequestModel
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class=" card col-md-6">
+            <div class="card-body ">
+                <div class="bg-light">
+                    <h1 class="tagcolor" style="color:mediumblue">Create</h1>
+                    <p class="tagcolor" style="color:mediumblue">Become One of our Customer by filling your Appropriate Details.</p>
+                    <hr class="tagcolor" style="color:mediumblue">
+
+                </div>
+                <form asp-controller="Appointment" asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @if (ViewBag.Doctors != null || ViewBag.Patients != null){
+                        <div class="form-row">
+
+
+                            <div class="form-group col-sm-6">
+                                <label asp-for="DoctorId" asp-items="ViewBag.Doctors" class="control-label"></label>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label asp-for="PatientId" asp-items="ViewBag.Patients" class="control-label"></label>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label asp-for="AppointmentDate" class="control-label"></label>
+                                <input type="datetime" asp-for="AppointmentDate" class="form-control" />
+                                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-sm-6">
+                                <label asp-for="Description" class="control-label"></label>
+                                <input asp-for="Description" class="form-control" />
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label asp-for="Location" class="control-label"></label>
+                                <input asp-for="Location" class="form-control" />
+                                <span asp-validation-for="Location" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <input href="#myModal" type="submit" value="Submit" class="btn btn-success trigger-btn col-sm-12" data-toggle="modal" />
+                        </div>
+                    }
+                    else{
+                             <div class="alert alert-warning">
+                            <strong>Warning!</strong> No Doctors or Patients available. Please add them first.
+                        </div>
+                        }
+                    }
+                    
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
