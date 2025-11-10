@@ -1,23 +1,56 @@
+# services:
+# type: web 
+# name: my-dotnet-app 
+# env: dotnet 
+# branch: main 
+# plan: free 
+# buildCommand: dotnet publish -c Release -o ./publish 
+# startCommand: dotnet ./publish/HMS.dll 
+# autoDeploy: true 
+
+# envVars:
+# - key: ConnectionStrings__DefaultConnection 
+# fromDatabase: 
+# - name: hms-db 
+# property: postgresql://hmsdb_ob8o_user:04HOYY53LGGSEj7LKSRjoW23cSBXTIan@dpg-d48uuebipnbc73dnrk3g-a/hmsdb_ob8o
+
+# databases:
+# - name: hms-db 
+# databaseName: hmsdb 
+# user: postgres 
+# password: strongpassword123 
+# plan: free
+# region: oregon
+
+
+
 services:
-type: web 
-name: my-dotnet-app 
-env: dotnet 
-branch: main 
-plan: free 
-buildCommand: dotnet publish -c Release -o ./publish 
-startCommand: dotnet ./publish/HMS.dll 
-autoDeploy: true 
-
-envVars:
-- key: ConnectionStrings__DefaultConnection 
-fromDatabase: 
-- name: hms-db 
-property: DATABASE_URL
-
-databases:
-- name: hms-db 
-databaseName: hmsdb 
-user: postgres 
-password: strongpassword123 
-plan: free
-region: oregon
+  - type: web
+    name: hms
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    buildCommand: docker build -t hms .
+    startCommand: docker run -p 10000:80 my-dotnet-app
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: hms-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: hms-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: hms-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: hms-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: hms-db
+          property: password
