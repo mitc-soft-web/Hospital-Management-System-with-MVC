@@ -8,27 +8,11 @@ services:
     buildCommand: docker build -t hms .
     startCommand: docker run -p 10000:80 hms
     envVars:
-      - key: DB_HOST
+      - key: ConnectionStrings__HmsConnection
         fromDatabase:
           name: hms-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: hms-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: hms-db
-          property: database
-      - key: DB_USER
-        fromDatabase:
-          name: hms-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: hms-db
-          property: password
-
+          property: connectionString
+        
 databases:
   - name: hms-db
     databaseName: hmsdb
