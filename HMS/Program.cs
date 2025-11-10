@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,8 +45,19 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //        new MySqlServerVersion(new Version(9, 0, 0))
 //    ));
 
+//builder.Services.AddDbContext<HmsContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("HmsConnection")));
+
+var databaseUrl = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
+var conn = new NpgsqlConnectionStringBuilder(databaseUrl)
+{
+    SslMode = SslMode.Require,
+    TrustServerCertificate = true
+}.ToString();
+
 builder.Services.AddDbContext<HmsContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("HmsConnection")));
+    options.UseNpgsql(conn));
+
 
 
 
