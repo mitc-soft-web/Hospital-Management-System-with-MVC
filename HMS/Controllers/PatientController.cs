@@ -28,8 +28,8 @@ namespace HMS.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            var roles = await _roleService.GetRolesAsync(CancellationToken.None);
-            ViewData["RoleIds"] = new SelectList(roles.Data, "Id", "Name");
+            //var roles = await _roleService.GetRolesAsync(CancellationToken.None);
+            //ViewData["Roles"]= new SelectList(roles.Data, "Id", "Name");
 
             return View();
         }
@@ -45,7 +45,7 @@ namespace HMS.Controllers
             }
             ViewBag.Success = "Patient created successfully";
 
-            return View(patient);
+            return RedirectToAction("Index");
         }
     }
 }

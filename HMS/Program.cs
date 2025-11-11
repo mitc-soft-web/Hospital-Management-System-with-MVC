@@ -45,8 +45,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //        new MySqlServerVersion(new Version(9, 0, 0))
 //    ));
 
-//builder.Services.AddDbContext<HmsContext>(options =>
-//    options.UseNpgsql(builder.Configuration.GetConnectionString("HmsConnection")));
+
 
 
 var connectionString = builder.Configuration.GetConnectionString("HmsConnection");

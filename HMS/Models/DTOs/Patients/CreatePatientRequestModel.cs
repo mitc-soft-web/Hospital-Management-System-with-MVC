@@ -21,7 +21,7 @@ namespace HMS.Models.DTOs.Patient
         public string EmergencyContact { get; set; }
         public string Genotype { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = [];
-        public List<Guid> RoleIds { get; set; } = [];
+        //public List<Guid> RoleIds { get; set; } = [];
 
     }
 }

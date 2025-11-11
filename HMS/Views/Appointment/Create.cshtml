@@ -15,10 +15,12 @@
                     <hr class="tagcolor" style="color:mediumblue">
 
                 </div>
-                <form asp-controller="Appointment" asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (ViewBag.Doctors != null && ViewBag.Patients != null)
+                {
+                    <form asp-controller="Appointment" asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    @if (ViewBag.Doctors != null || ViewBag.Patients != null){
+                        {
                         <div class="form-row">
 
 
@@ -53,15 +55,18 @@
                         <div class="form-group ">
                             <input href="#myModal" type="submit" value="Submit" class="btn btn-success trigger-btn col-sm-12" data-toggle="modal" />
                         </div>
-                    }
-                    else{
-                             <div class="alert alert-warning">
-                            <strong>Warning!</strong> No Doctors or Patients available. Please add them first.
-                        </div>
                         }
-                    }
-                    
-                </form>
+                        
+
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <strong>Warning!</strong> No Doctors or Patients available. Please add them first.
+                    </div>
+                }
+               
             </div>
         </div>
 
@@ -71,8 +76,8 @@
 
 
 
-@section Scripts {
+@* @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+} *@

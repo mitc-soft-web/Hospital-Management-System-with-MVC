@@ -79,11 +79,11 @@ namespace HMS.Implementation.Services
                     };
 
                 }
-                var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
+                //var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
 
-                var userRoleNames = roles.Select(r => r.Name).ToList();
+                //var userRoleNames = roles.Select(r => r.Name).ToList();
 
-                var result = await _userManager.AddToRolesAsync(patientUser, userRoleNames);
+                var result = await _userManager.AddToRoleAsync(patientUser, "Patient");
                 if (!result.Succeeded)
                 {
                     _logger.LogError("Unable to add user to roles");

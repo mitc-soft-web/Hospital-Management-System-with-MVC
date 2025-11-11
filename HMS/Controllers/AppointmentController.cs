@@ -32,11 +32,24 @@ namespace HMS.Controllers
         public async Task<IActionResult> Create()
         {
             var doctors = await _doctorService.GetDotorsAsync(CancellationToken.None);
-            ViewData["Doctors"] = new SelectList(doctors.Data, "Id", "FullName");
-
+            if (!doctors.Status)
+            {
+                return View();
+            }
+            else
+            {
+                ViewData["Doctors"] = new SelectList(doctors.Data, "Id", "FullName");
+            }
+            
             var patients = await _patientService.GetPatientsAsync(CancellationToken.None);
-            ViewData["Patients"] = new SelectList(patients.Data, "Id", "FullName");
-
+            if(!patients.Status)
+            {
+                return View();
+            }
+            else
+            {
+                ViewData["Patients"] = new SelectList(patients.Data, "Id", "FullName");
+            }
             return View();
         }
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HMS.Migrations
 {
     [DbContext(typeof(HmsContext))]
-    [Migration("20251110192328_second")]
-    partial class second
+    [Migration("20251111115813_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

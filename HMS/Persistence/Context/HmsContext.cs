@@ -13,13 +13,13 @@ namespace HMS.Persistence.Context
            
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-                .UseNpgsql("Host=localhost;Port=5432;Database=HospitalManagementSystem;Username=postgres;Password=dev_abass@2021;")
-                .ConfigureWarnings(w =>
-                    w.Ignore(RelationalEventId.PendingModelChangesWarning));
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder
+        //        .UseNpgsql("Host=localhost;Port=5432;Database=HospitalManagementSystem;Username=postgres;Password=dev_abass@2021;")
+        //        .ConfigureWarnings(w =>
+        //            w.Ignore(RelationalEventId.PendingModelChangesWarning));
+        //}
 
 
         protected override void OnModelCreating(ModelBuilder builder)

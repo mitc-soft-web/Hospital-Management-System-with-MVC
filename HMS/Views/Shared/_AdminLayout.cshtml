@@ -216,10 +216,19 @@
 								</li>
 							</ul>
 						</li>
-						
-						<li>
-							<a href="patient-list.html"><i class="fe fe-user"></i> <span>Patients</span></a>
+
+						<li class="submenu">
+							<a href="#"><i class="fe fe-users"></i> <span>Patients</span> <span class="menu-arrow"></span></a>
+							<ul style="display: none;">
+								<li>
+									<a asp-controller="Patient" asp-action="Index">All Patients</a>
+								</li>
+								<li>
+									<a asp-controller="Patient" asp-action="Create">Add New Patient</a>
+								</li>
+							</ul>
 						</li>
+						
 						<li>
 							<a href="reviews.html"><i class="fe fe-star-o"></i> <span>Reviews</span></a>
 						</li>
