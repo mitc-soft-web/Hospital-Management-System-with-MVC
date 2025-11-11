@@ -48,17 +48,31 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddDbContext<HmsContext>(options =>
 //    options.UseNpgsql(builder.Configuration.GetConnectionString("HmsConnection")));
 
-var databaseUrl = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
-var conn = new NpgsqlConnectionStringBuilder(databaseUrl)
+
+var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
+
+// Detect if it’s a Render-style URL (postgres://...) and convert
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
-    SslMode = SslMode.Require,
-    TrustServerCertificate = true
-}.ToString();
+    var uri = new Uri(connectionString);
+    var userInfo = uri.UserInfo.Split(':');
+
+    var npgsqlBuilder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port,
+        Username = userInfo[0],
+        Password = userInfo.Length > 1 ? userInfo[1] : "",
+        Database = uri.AbsolutePath.Trim('/'),
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+
+    connectionString = npgsqlBuilder.ConnectionString;
+}
 
 builder.Services.AddDbContext<HmsContext>(options =>
-    options.UseNpgsql(conn));
-
-
+    options.UseNpgsql(connectionString));
 
 
 
