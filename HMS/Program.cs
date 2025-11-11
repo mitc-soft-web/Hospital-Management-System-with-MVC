@@ -124,6 +124,22 @@ app.MapControllerRoute(
     pattern: "{controller=User}/{action=Login}/{id?}")
     .WithStaticAssets();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<HmsContext>();
+
+    try
+    {
+        context.Database.Migrate();
+        Console.WriteLine("Database migrated successfully on startup.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database migration failed: {ex.Message}");
+    }
+}
+
 app.Use(async (context, next) =>
 {
     try
@@ -137,21 +153,5 @@ app.Use(async (context, next) =>
         throw;
     }
 });
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<HmsContext>();
-
-    try
-    {
-        context.Database.Migrate();
-        Console.WriteLine("✅ Database migrated successfully on startup.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ Database migration failed: {ex.Message}");
-    }
-}
-
 
 app.Run();
