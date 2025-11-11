@@ -46,8 +46,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //    ));
 
 
-var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
 
+// Convert postgres:// style URI if necessary
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
     var uri = new Uri(connectionString);
@@ -66,6 +67,10 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
 
     connectionString = npgsqlBuilder.ConnectionString;
 }
+
+builder.Services.AddDbContext<HmsContext>(options =>
+    options.UseNpgsql(connectionString));
+
 
 // Register DbContext
 builder.Services.AddDbContext<HmsContext>(options =>
