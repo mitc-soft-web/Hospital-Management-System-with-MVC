@@ -46,11 +46,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //    ));
 
 
-
-
 var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
-// Detect if it’s a Render-style URL (postgres://...) and convert
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
     var uri = new Uri(connectionString);
@@ -70,6 +67,7 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
     connectionString = npgsqlBuilder.ConnectionString;
 }
 
+// Register DbContext
 builder.Services.AddDbContext<HmsContext>(options =>
     options.UseNpgsql(connectionString));
 

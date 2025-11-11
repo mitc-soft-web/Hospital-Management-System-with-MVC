@@ -15,6 +15,6 @@ databases:
   - name: hms-db
     databaseName: hmsdb
     user: postgres
-    password: strongpassword123
+    password: password
     plan: free
     region: oregon
