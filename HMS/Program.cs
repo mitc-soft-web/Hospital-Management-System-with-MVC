@@ -103,7 +103,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
