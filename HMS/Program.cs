@@ -122,6 +122,19 @@ app.MapControllerRoute(
     pattern: "{controller=User}/{action=Login}/{id?}")
     .WithStaticAssets();
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"?? Exception caught: {ex.Message}");
+        Console.WriteLine(ex.StackTrace);
+        throw;
+    }
+});
 
 
 app.Run();
