@@ -46,9 +46,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //    ));
 
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
+var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
-// Convert postgres:// style URI if necessary
+// Just in case you want to use an env var later, keep this logic flexible
+if (string.IsNullOrEmpty(connectionString))
+{
+    connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
+}
+
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
     var uri = new Uri(connectionString);
@@ -70,12 +75,6 @@ if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("post
 
 builder.Services.AddDbContext<HmsContext>(options =>
     options.UseNpgsql(connectionString));
-
-
-// Register DbContext
-builder.Services.AddDbContext<HmsContext>(options =>
-    options.UseNpgsql(connectionString));
-
 
 
 //builder.Services.AddScoped<IIdentityService, IdentityService>();

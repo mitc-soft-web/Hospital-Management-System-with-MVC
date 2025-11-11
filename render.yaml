@@ -5,16 +5,10 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-    envVars:
-      - key: ConnectionStrings__HmsConnection
-        fromDatabase:
-          name: hms-db
-          property: connectionString
 
 databases:
   - name: hms-db
-    databaseName: hmsdb
-    user: postgres
-    password: password
+    databaseName: hmsdb_93f0
+    user: hmsdb_93f0_user
     plan: free
     region: oregon
