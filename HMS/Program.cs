@@ -1,4 +1,4 @@
-using HMS.Identity;
+﻿using HMS.Identity;
 using HMS.Implementation.Repositories;
 using HMS.Interfaces.Repositories;
 using HMS.Models.Entities;
@@ -50,7 +50,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
-// Detect if it�s a Render-style URL (postgres://...) and convert
+// Detect if it’s a Render-style URL (postgres://...) and convert
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
 {
     var uri = new Uri(connectionString);
@@ -130,11 +130,26 @@ app.Use(async (context, next) =>
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"?? Exception caught: {ex.Message}");
+        Console.WriteLine($"🔥 Exception caught: {ex.Message}");
         Console.WriteLine(ex.StackTrace);
         throw;
     }
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<HmsContext>();
+
+    try
+    {
+        context.Database.Migrate();
+        Console.WriteLine("✅ Database migrated successfully on startup.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Database migration failed: {ex.Message}");
+    }
+}
 
 
 app.Run();
