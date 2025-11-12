@@ -67,41 +67,26 @@ namespace HMS.Implementation.Services
 
             var strategy = _unitOfWork.CreateExecutionStrategy();
 
-            await strategy.ExecuteAsync(async () =>
+            BaseResponse<bool> response = await strategy.ExecuteAsync(async () =>
             {
                 using var transaction = await _unitOfWork.BeginTransactionAsync();
                 try
                 {
-                    var newUser = await _userManager.CreateAsync(doctorUser);
-                    if (newUser == null)
+                    var newUserResult = await _userManager.CreateAsync(doctorUser);
+                    if (!newUserResult.Succeeded)
                     {
                         _logger.LogError("User Creation unsuccessful");
-                        return new BaseResponse<bool>
-                        {
-                            Message = "User Creation unsuccessful",
-                            Status = false
-                        };
+                        throw new Exception("User creation failed: " + string.Join(", ", newUserResult.Errors.Select(e => e.Description)));
 
                     }
                     var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
 
                     var userRoleNames = roles.Select(r => r.Name).ToList();
 
-                    var result = await _userManager.AddToRolesAsync(doctorUser, userRoleNames);
-                    if (!result.Succeeded)
+                    var rolesResult = await _userManager.AddToRolesAsync(doctorUser, userRoleNames);
+                    if (!rolesResult.Succeeded)
                     {
-                        _logger.LogError("Unable to add user to roles");
-                        return new BaseResponse<bool>
-                        {
-                            Message = "Unable to add user to roles",
-                            Status = false
-                        };
-                    }
-
-
-                    if (!result.Succeeded)
-                    {
-                        throw new Exception($"Unable to add doctor to roles");
+                        throw new Exception("Adding roles failed: " + string.Join(", ", rolesResult.Errors.Select(e => e.Description)));
                     }
 
                     var doctor = new Doctor
@@ -129,16 +114,6 @@ namespace HMS.Implementation.Services
                     await _unitOfWork.SaveChangesAsync(CancellationToken.None);
                     await transaction.CommitAsync();
 
-                    if (createDoctor == null)
-                    {
-                        _logger.LogError("Couldn't create doctor");
-                        return new BaseResponse<bool>
-                        {
-                            Message = "Couldn't create doctor",
-                            Status = false
-                        };
-                    }
-
                     _logger.LogInformation("Doctor created successfully");
                     return new BaseResponse<bool>
                     {
@@ -158,12 +133,7 @@ namespace HMS.Implementation.Services
                     };
                 }
             });
-            _logger.LogError("Couldn't create doctor");
-            return new BaseResponse<bool>
-            {
-                Message = "Couldn't create doctor",
-                Status = false
-            };
+            return response;
 
         }
 
