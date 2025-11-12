@@ -22,10 +22,10 @@
 
 services:
   - type: web
-    name: hms  # The name of your web service
+    name: hms
     env: docker
     plan: starter
-    dockerfilePath: ./Dockerfile  # Path to your Dockerfile
+    dockerfilePath: ./Dockerfile
     autoDeploy: true
 
     # Link environment variable to your Render database

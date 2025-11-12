@@ -1,6 +1,5 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HMS.Implementation.Repositories
@@ -17,6 +16,11 @@ namespace HMS.Implementation.Repositories
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return await _hmsContext.Database.BeginTransactionAsync();
+        }
+
+        public IExecutionStrategy CreateExecutionStrategy()
+        {
+            return _hmsContext.Database.CreateExecutionStrategy();
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)

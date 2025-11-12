@@ -7,6 +7,7 @@ namespace HMS.Interfaces.Repositories
     {
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         Task<IDbContextTransaction> BeginTransactionAsync();
+        IExecutionStrategy CreateExecutionStrategy();
         
     }
 }
