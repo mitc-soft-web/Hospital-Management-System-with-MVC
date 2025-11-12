@@ -49,29 +49,29 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
 // Just in case you want to use an env var later, keep this logic flexible
-if (string.IsNullOrEmpty(connectionString))
-{
-    connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
-}
+//if (string.IsNullOrEmpty(connectionString))
+//{
+//    connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__HmsConnection");
+//}
 
-if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
-{
-    var uri = new Uri(connectionString);
-    var userInfo = uri.UserInfo.Split(':');
+//if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres://"))
+//{
+//    var uri = new Uri(connectionString);
+//    var userInfo = uri.UserInfo.Split(':');
 
-    var npgsqlBuilder = new NpgsqlConnectionStringBuilder
-    {
-        Host = uri.Host,
-        Port = uri.Port,
-        Username = userInfo[0],
-        Password = userInfo.Length > 1 ? userInfo[1] : "",
-        Database = uri.AbsolutePath.Trim('/'),
-        SslMode = SslMode.Require,
-        TrustServerCertificate = true
-    };
+//    var npgsqlBuilder = new NpgsqlConnectionStringBuilder
+//    {
+//        Host = uri.Host,
+//        Port = uri.Port,
+//        Username = userInfo[0],
+//        Password = userInfo.Length > 1 ? userInfo[1] : "",
+//        Database = uri.AbsolutePath.Trim('/'),
+//        SslMode = SslMode.Require,
+//        TrustServerCertificate = true
+//    };
 
-    connectionString = npgsqlBuilder.ConnectionString;
-}
+//    connectionString = npgsqlBuilder.ConnectionString;
+//}
 
 builder.Services.AddDbContext<HmsContext>(options =>
     options.UseNpgsql(connectionString));
