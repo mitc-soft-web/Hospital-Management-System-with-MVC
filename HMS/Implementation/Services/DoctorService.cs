@@ -6,6 +6,7 @@ using HMS.Models.DTOs.Doctor;
 using HMS.Models.DTOs.Specialty;
 using HMS.Models.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HMS.Implementation.Services
 {
@@ -47,7 +48,6 @@ namespace HMS.Implementation.Services
                 };
             }
 
-
             if (request.PasswordHash != request.ConfirmPassword) return new BaseResponse<bool>
             {
                 Message = "Password doesnt match!",
@@ -57,106 +57,83 @@ namespace HMS.Implementation.Services
             (var passwordResult, var message) = ValidatePassword(request.PasswordHash);
             if (!passwordResult) return new BaseResponse<bool> { Message = message, Status = false };
 
-            using var transaction = await _unitOfWork.BeginTransactionAsync();
-            try
+
+            var doctorUser = new User
             {
-                var doctorUser = new User
-                {
-                    Email = request.Email,
-                    PasswordHash = _identityService.GetPasswordHash(request.PasswordHash)
-                };
+                Email = request.Email,
+                PasswordHash = _identityService.GetPasswordHash(request.PasswordHash)
+            };
 
-                var newUser = await _userManager.CreateAsync(doctorUser);
-                if (newUser == null)
-                {
-                    _logger.LogError("User Creation unsuccessful");
-                    return new BaseResponse<bool>
-                    {
-                        Message = "User Creation unsuccessful",
-                        Status = false
-                    };
+            var strategy = _unitOfWork.CreateExecutionStrategy();
 
-                }
-                var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
-
-                var userRoleNames = roles.Select(r => r.Name).ToList();
-
-                var result = await _userManager.AddToRolesAsync(doctorUser, userRoleNames);
-                if (!result.Succeeded)
-                {
-                    _logger.LogError("Unable to add user to roles");
-                    return new BaseResponse<bool>
-                    {
-                        Message = "Unable to add user to roles",
-                        Status = false
-                    };
-                }
-
-                var userRoles = await _userManager.GetRolesAsync(doctorUser);
-
-                //var token = _identityService.GenerateToken(doctorUser, userRoles);
-
-                if (!result.Succeeded)
-                {
-                    throw new Exception($"Unable to add doctor to roles");
-                }
-
-                var doctor = new Doctor
-                {
-                    UserId = doctorUser.Id,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Address = request.Address,
-                    Gender = request.Gender,
-                    PhoneNumber = request.PhoneNumber,
-                    Position = request.Position,
-                    Qualification = request.Qualification,
-                    YearsOfExperience = request.YearsOfExperience,
-                    DateCreated = DateTime.UtcNow
-
-
-                };
-                foreach (var speciality in request.SpecialityIds)
-                {
-                  
-                    doctor.DoctorSpecialities.Add(new DoctorSpeciality { SpecialityId = speciality});
-                }
-
-               
-
-                var createDoctor = await _doctorRepository.Add(doctor);
-                await _unitOfWork.SaveChangesAsync(CancellationToken.None);
-
-                if (createDoctor == null)
-                {
-                    _logger.LogError("Couldn't create doctor");
-                    return new BaseResponse<bool>
-                    {
-                        Message = "Couldn't create doctor",
-                        Status = false
-                    };
-                }
-
-                await transaction.CommitAsync();
-                _logger.LogInformation("Doctor created successfully");
-                return new BaseResponse<bool>
-                {
-                    Message = "Doctor created successfully",
-                    Status = true
-                };
-            }
-            catch(Exception ex)
+            BaseResponse<bool> response = await strategy.ExecuteAsync(async () =>
             {
-                _logger.LogError(ex, "Error creating doctor, rolling back.....");
-                await transaction.RollbackAsync();
-                return new BaseResponse<bool>
+                using var transaction = await _unitOfWork.BeginTransactionAsync();
+                try
                 {
-                    Message = "An error occurred while creating doctor",
-                    Status = false
-                };
-            }
+                    
+                    var newUserResult = await _userManager.CreateAsync(doctorUser);
+                    if (!newUserResult.Succeeded)
+                    {
+                        throw new Exception("User creation failed: " + string.Join(", ", newUserResult.Errors.Select(e => e.Description)));
+                    }
 
-            
+                    
+                    var roles = await _roleRepository.GetRolesByIdsAsync(r => request.RoleIds.Contains(r.Id));
+                    var roleNames = roles.Select(r => r.Name).ToList();
+                    var roleResult = await _userManager.AddToRolesAsync(doctorUser, roleNames);
+                    if (!roleResult.Succeeded)
+                    {
+                        throw new Exception("Adding roles failed: " + string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                    }
+
+                
+                    var doctor = new Doctor
+                    {
+                        UserId = doctorUser.Id, 
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        Address = request.Address,
+                        Gender = request.Gender,
+                        PhoneNumber = request.PhoneNumber,
+                        Position = request.Position,
+                        Qualification = request.Qualification,
+                        YearsOfExperience = request.YearsOfExperience,
+                        DateCreated = DateTime.UtcNow
+                    };
+
+                    foreach (var specialityId in request.SpecialityIds)
+                    {
+                        var doctorSpeciality = new DoctorSpeciality
+                        {
+                            SpecialityId = specialityId,
+                        };
+                    }
+
+                    await _doctorRepository.Add(doctor);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+
+                    return new BaseResponse<bool>
+                    {
+                        Message = "Doctor created successfully",
+                        Status = true
+                    };
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogError(ex, "Error creating doctor");
+                    return new BaseResponse<bool>
+                    {
+                        Message = "An error occurred while creating doctor: " + ex.Message,
+                        Status = false
+                    };
+                }
+            });
+
+            return response;
 
         }
 
