@@ -27,6 +27,40 @@ namespace HMS.Implementation.Services
             _logger = logger;
         }
 
+        public async Task<BaseResponse<bool>> AcceptAppointment(Guid id)
+        {
+            var appointment = await _appointmentRepository.Get<Appointment>(ap => ap.Id == id);
+            if (appointment == null)
+            {
+                _logger.LogError($"Appointment with Id: '{appointment?.Id}' cannot be found");
+                return new BaseResponse<bool>
+                {
+                    Message = $"Appointment with Id: '{appointment?.Id}' cannot be found",
+                    Status = false
+                };
+            }
+
+            appointment.AppointmentStatus = Models.Enums.AppointmentStatus.Accepted;
+            await _unitOfWork.SaveChangesAsync();
+            var acceptAppointment = _appointmentRepository.AcceptAppointment(appointment);
+
+            if (!acceptAppointment)
+            {
+                return new BaseResponse<bool>
+                {
+                    Message = "Appointment couldn't be accepted",
+                    Status = false
+
+                };
+            }
+            return new BaseResponse<bool>
+            {
+                Message = "Appointment accepted",
+                Status = true
+            };
+
+        }
+
         public async Task<BaseResponse<bool>> CreateAsync(CreateAppointmentRequestModel request)
         {
             var doctor = await _doctorRepository.Get<Doctor>(d => d.Id == request.DoctorId);
@@ -49,7 +83,7 @@ namespace HMS.Implementation.Services
                 };
             }
 
-            var appointnment = new Appointment
+            var appointment = new Appointment
             {
                 DoctorId = doctor.Id,
                 PatientId = patient.Id,
@@ -57,11 +91,11 @@ namespace HMS.Implementation.Services
                 Location = request.Location,
                 AppointmentDate = request.AppointmentDate,
                 Title = request.Title,
-                AppointmentStatus = Models.Enums.AppointmentStatus.Scheduled,
+                AppointmentStatus = Models.Enums.AppointmentStatus.Pending,
                 DateCreated = DateTime.UtcNow
             };
 
-            var newAppointment = await _appointmentRepository.Add(appointnment);
+            var newAppointment = await _appointmentRepository.Add(appointment);
             await _unitOfWork.SaveChangesAsync(CancellationToken.None);
 
             if (newAppointment == null)
@@ -86,10 +120,10 @@ namespace HMS.Implementation.Services
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetAppointmentsAsync(CancellationToken cancellationToken)
+        public async Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetAllByDoctorIdAsync(Guid userDoctorId, CancellationToken cancellationToken)
         {
-            var appointments = await _appointmentRepository.GetAllAppointmentsAndDetails();
-            if(!appointments.Any())
+            var appointments = await _appointmentRepository.GetAppointmentByDctorId(userDoctorId);
+            if (!appointments.Any())
             {
                 _logger.LogError("No appointments found");
                 return new BaseResponse<IReadOnlyList<AppointmentDto>>
@@ -108,24 +142,146 @@ namespace HMS.Implementation.Services
                     Id = ap.Id,
                     AppointmentDate = ap.AppointmentDate,
                     Description = ap.Description,
-                    Location = ap.Location,
-                    AppointmentStatus = ap.AppointmentStatus,
                     Title = ap.Title,
                     DateCreated = ap.DateCreated,
-                    DoctorId = ap.DoctorId,
-                    Doctor = ap.Doctor,
-                    PatientId = ap.PatientId,
+                    AppointmentStatus = ap.AppointmentStatus,
                     ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
 
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+                        MedicalRecordNumber = ap.Patient.PhoneNumber,
+                        PatientDetail = new PatientDetailsDto
+                        {
+                            Allergies = ap.Patient.PatientDetail.Allergies,
+                            MedicalHistory = ap.Patient.PatientDetail.MedicalHistory,
+                            Genotype = ap.Patient.PatientDetail.Genotype,
+                            EmergencyContact = ap.Patient.PatientDetail.EmergencyContact,
+                            BloodGroup = ap.Patient.PatientDetail.BloodGroup
+                            
+                        }
+
+                    }
+                    
+                }).ToList()
+
+
+
+            };
+
+        }
+
+        public async Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetAppointmentsAsync(CancellationToken cancellationToken)
+        {
+            var appointments = await _appointmentRepository.GetAllAppointmentsAndDetails();
+            if (!appointments.Any())
+            {
+                _logger.LogError("No appointments found");
+                return new BaseResponse<IReadOnlyList<AppointmentDto>>
+                {
+                    Message = "No appointments found",
+                    Status = false
+                };
+            }
+            _logger.LogInformation("Data fetched successfully");
+            return new BaseResponse<IReadOnlyList<AppointmentDto>>
+            {
+                Message = "Data fetched successfully",
+                Status = true,
+                Data = appointments.Select(ap => new AppointmentDto
+                {
+                    Id = ap.Id,
+                    AppointmentDate = ap.AppointmentDate,
+                    Description = ap.Description,
+                    Title = ap.Title,
+                    DateCreated = ap.DateCreated,
+                    ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+
+                    }
                 }).ToList()
 
             };
         }
-
-
-        public Task<BaseResponse<AppointmentDto>> GetByIdAsync(Guid appointmentId, CancellationToken cancellationToken)
+        public async Task<BaseResponse<AppointmentDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var appointment = await _appointmentRepository.GetAppointmentById(id);
+            if (appointment == null)
+            {
+                _logger.LogError($"Appointment with Id: '{appointment?.Id}' cannot be found");
+                return new BaseResponse<AppointmentDto>
+                {
+                    Message = $"Appointment with Id: '{appointment?.Id}' cannot be found",
+                    Status = false
+                };
+            }
+
+            return new BaseResponse<AppointmentDto>
+            {
+                Message = $"Appointment with Id: '{id}' found",
+                Status = true,
+                Data = new AppointmentDto
+                {
+                    Id = appointment.Id,
+                    AppointmentDate = appointment.AppointmentDate,
+                    Description = appointment.Description,
+                    Location = appointment.Location,
+                    AppointmentStatus = appointment.AppointmentStatus,
+                    Title = appointment.Title,
+                    DateCreated = appointment.DateCreated,
+                    ChangeInAppointmentDescription = appointment.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = appointment.Doctor.FullName(),
+                        Email = appointment.Doctor.User.Email,
+                        PhoneNumber = appointment.Doctor.PhoneNumber,
+                        DoctorSpecialities = appointment.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = appointment.Patient.FullName(),
+                        Address = appointment.Patient.Address,
+                        PhoneNumber = appointment.Patient.PhoneNumber,
+                        Email = appointment.Patient.User.Email,
+                        MedicalRecordNumber = appointment.Patient.MedicalRecordNumber,
+                        PatientDetail = new PatientDetailsDto
+                        {
+                            Allergies = appointment.Patient.PatientDetail.Allergies,
+                            MedicalHistory = appointment.Patient.PatientDetail.MedicalHistory,
+                            Genotype = appointment.Patient.PatientDetail.Genotype,
+                            EmergencyContact = appointment.Patient.PatientDetail.EmergencyContact,
+                            BloodGroup = appointment.Patient.PatientDetail.BloodGroup
+
+                        }
+
+
+                    }
+                }
+            };
         }
 
         public async Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetCancelledAppointmentsAsync(CancellationToken cancellationToken)
@@ -155,9 +311,24 @@ namespace HMS.Implementation.Services
                     Title = ap.Title,
                     DateCreated = ap.DateCreated,
                     DoctorId = ap.DoctorId,
-                    Doctor = ap.Doctor,
                     PatientId = ap.PatientId,
                     ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+
+                    }
 
                 }).ToList()
 
@@ -191,9 +362,24 @@ namespace HMS.Implementation.Services
                     Title = ap.Title,
                     DateCreated = ap.DateCreated,
                     DoctorId = ap.DoctorId,
-                    Doctor = ap.Doctor,
                     PatientId = ap.PatientId,
                     ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+
+                    }
 
                 }).ToList()
             };
@@ -226,9 +412,24 @@ namespace HMS.Implementation.Services
                     Title = ap.Title,
                     DateCreated = ap.DateCreated,
                     DoctorId = ap.DoctorId,
-                    Doctor = ap.Doctor,
                     PatientId = ap.PatientId,
                     ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+
+                    }
 
                 }).ToList()
             };
@@ -261,9 +462,24 @@ namespace HMS.Implementation.Services
                     Title = ap.Title,
                     DateCreated = ap.DateCreated,
                     DoctorId = ap.DoctorId,
-                    Doctor = ap.Doctor,
                     PatientId = ap.PatientId,
                     ChangeInAppointmentDescription = ap.ChangeInAppointmentDescription,
+                    Doctor = new Models.DTOs.Doctor.DoctorDto
+                    {
+                        FullName = ap.Doctor.FullName(),
+                        Email = ap.Doctor.User.Email,
+                        PhoneNumber = ap.Doctor.PhoneNumber,
+                        DoctorSpecialities = ap.Doctor.DoctorSpecialities.Select(sd => sd.Speciality.Name).ToList()
+
+                    },
+                    Patient = new PatientDto
+                    {
+                        FullName = ap.Patient.FullName(),
+                        Address = ap.Patient.Address,
+                        PhoneNumber = ap.Patient.PhoneNumber,
+                        Email = ap.Patient.User.Email,
+
+                    }
 
                 }).ToList()
             };

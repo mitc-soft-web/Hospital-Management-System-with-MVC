@@ -8,8 +8,9 @@ namespace HMS.Interfaces.Services
     public interface IAppointmentService
     {
         Task<BaseResponse<bool>> CreateAsync(CreateAppointmentRequestModel request);
-        Task<BaseResponse<AppointmentDto>> GetByIdAsync(Guid appointmentId, CancellationToken cancellationToken);
-        //Task<IReadOnlyList<AppointmentDto>> GetAsync(string param, CancellationToken cancellationToken);
+        Task<BaseResponse<AppointmentDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetAllByDoctorIdAsync(Guid userDoctorId, CancellationToken cancellationToken);
+        Task<BaseResponse<bool>> AcceptAppointment(Guid id);
         Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetAppointmentsAsync(CancellationToken cancellationToken);
         Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetScheduledAppointmentsAsync(CancellationToken cancellationToken);
         Task<BaseResponse<IReadOnlyList<AppointmentDto>>> GetCancelledAppointmentsAsync(CancellationToken cancellationToken);

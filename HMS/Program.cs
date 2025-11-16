@@ -39,14 +39,14 @@ builder.Services.Scan(scan => scan
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Add Database
-//builder.Services.AddDbContext<HmsContext>(options =>
-//    options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
-//        new MySqlServerVersion(new Version(9, 0, 0))
-//    ));
+//Add Database
+builder.Services.AddDbContext<HmsContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("HMSContext"),
+        new MySqlServerVersion(new Version(9, 0, 0))
+    ));
 
 
-var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
+//var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
 // Just in case you want to use an env var later, keep this logic flexible
 //if (string.IsNullOrEmpty(connectionString))
@@ -73,8 +73,8 @@ var connectionString = builder.Configuration.GetConnectionString("HmsConnection"
 //    connectionString = npgsqlBuilder.ConnectionString;
 //}
 
-builder.Services.AddDbContext<HmsContext>(options =>
-    options.UseNpgsql(connectionString));
+//builder.Services.AddDbContext<HmsContext>(options =>
+//    options.UseNpgsql(connectionString));
 
 
 //builder.Services.AddScoped<IIdentityService, IdentityService>();
@@ -125,33 +125,33 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<HmsContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<HmsContext>();
 
-    try
-    {
-        context.Database.Migrate();
-        Console.WriteLine("Database migrated successfully on startup.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Database migration failed: {ex.Message}");
-    }
-}
+//    try
+//    {
+//        context.Database.Migrate();
+//        Console.WriteLine("Database migrated successfully on startup.");
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine($"Database migration failed: {ex.Message}");
+//    }
+//}
 
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"🔥 Exception caught: {ex.Message}");
-        Console.WriteLine(ex.StackTrace);
-        throw;
-    }
-});
+//app.Use(async (context, next) =>
+//{
+//    try
+//    {
+//        await next();
+//    }
+//    catch (Exception ex)
+//    {
+//        Console.WriteLine($"🔥 Exception caught: {ex.Message}");
+//        Console.WriteLine(ex.StackTrace);
+//        throw;
+//    }
+//});
 
 app.Run();

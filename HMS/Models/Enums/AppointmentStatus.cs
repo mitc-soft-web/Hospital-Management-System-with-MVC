@@ -5,6 +5,8 @@
         Scheduled = 1,
         Completed,
         Rescheduled,
-        Cancelled
+        Cancelled,
+        Accepted,
+        Pending
     }
 }

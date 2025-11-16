@@ -1,4 +1,5 @@
-﻿using HMS.Interfaces.Services;
+﻿using HMS.Implementation.Services;
+using HMS.Interfaces.Services;
 using HMS.Models.DTOs.Doctor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +10,15 @@ using System.Security.Claims;
 namespace HMS.Controllers
 {
     public class DoctorController(IDoctorService doctorService, ISpecialtyService specialtyService,
-        IRoleService roleService, ILogger<DoctorController> logger, IUserService userService) : Controller
+        IRoleService roleService, ILogger<DoctorController> logger, IUserService userService, 
+        IAppointmentService appointmentService) : Controller
     {
         private readonly IDoctorService _doctorService = doctorService ?? throw new ArgumentNullException(nameof(doctorService));
         private readonly ISpecialtyService _specialtyService = specialtyService ?? throw new ArgumentNullException(nameof(specialtyService));
         private readonly IRoleService roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
         private readonly ILogger<DoctorController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        private readonly IAppointmentService _appointmentService = appointmentService ?? throw new ArgumentNullException(nameof(appointmentService));
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -86,6 +89,25 @@ namespace HMS.Controllers
 
 
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMyAppointments()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine(User.FindFirstValue(ClaimTypes.GivenName));
+
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return RedirectToAction("DoctorProfile", "Doctor");
+            }
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return BadRequest("Invalid user ID format.");
+            }
+            var appointments = await _appointmentService.GetAllByDoctorIdAsync(userId, CancellationToken.None);
+
+            return View(appointments);
         }
     }
 }

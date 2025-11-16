@@ -1,6 +1,7 @@
 ﻿using HMS.Interfaces.Repositories;
 using HMS.Interfaces.Services;
 using HMS.Models.DTOs;
+using HMS.Models.DTOs.Patients;
 using HMS.Models.DTOs.Role;
 using HMS.Models.DTOs.Users;
 using HMS.Models.Entities;
@@ -87,7 +88,7 @@ namespace HMS.Implementation.Services
                             PhoneNumber = user.Patient.PhoneNumber,
                             DateOfBirth = user.Patient.DateOfBirth,
                             Address = user.Patient.Address,
-                            PatientDetail = new PatientDetail
+                            PatientDetail = new PatientDetailsDto
                             {
                                 Genotype = user.Patient.PatientDetail.Genotype,
                                 MedicalHistory = user.Patient.PatientDetail.MedicalHistory,

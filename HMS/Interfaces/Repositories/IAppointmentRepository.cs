@@ -10,5 +10,9 @@ namespace HMS.Interfaces.Repositories
         Task<IReadOnlyList<Appointment>> GetAllCompletedAppointments();
         Task<IReadOnlyList<Appointment>> GetAllAppointmentsAndDetails();
 
+        bool AcceptAppointment(Appointment appointment);
+        Task<Appointment> GetAppointmentById(Guid id);
+        Task<IReadOnlyList<Appointment>> GetAppointmentByDctorId(Guid userDoctorId);
+
     }
 }

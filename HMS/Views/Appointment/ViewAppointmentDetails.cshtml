@@ -1,0 +1,99 @@
+﻿@using HMS.Models.DTOs
+
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@model BaseResponse<HMS.Models.DTOs.Appointment.AppointmentDto>
+
+<h1>Details</h1>
+
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">@Model.Data.Title</h4>
+        <small>Appointment Date: @Model.Data.AppointmentDate.ToString("f")</small>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h6>Description</h6>
+                <p>@Html.DisplayFor(m => m.Data.Description)</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Location</h6>
+                <p>@Html.DisplayFor(m => m.Data.Location)</p>
+            </div>
+        </div>
+
+        <hr />
+
+        <h5>Patient Information</h5>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <b>Full Name:</b> @Html.DisplayFor(m => m.Data.Patient.FullName)
+            </div>
+            <div class="col-md-6">
+                <b>Medical Record No:</b> @Model.Data.Patient.MedicalRecordNumber
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <b>Blood Group:</b> @Html.DisplayFor(m => m.Data.Patient.PatientDetail.BloodGroup)
+            </div>
+            <div class="col-md-4">
+                <b>Genotype:</b> @Html.DisplayFor(m => m.Data.Patient.PatientDetail.Genotype)
+            </div>
+            <div class="col-md-4">
+                <b>Emergency Contact:</b> @Html.DisplayFor(m => m.Data.Patient.PatientDetail.EmergencyContact)
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <b>Phone Number:</b> @Html.DisplayFor(m => m.Data.Patient.PhoneNumber)
+            </div>
+        </div>
+
+        <hr />
+
+        <h5>Doctor Information</h5>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <b>Full Name:</b> @Html.DisplayFor(m => m.Data.Doctor.FullName)
+            </div>
+            <div class="col-md-6">
+                <b>Email:</b> @Html.DisplayFor(m => m.Data.Doctor.Email)
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <b>Phone Number:</b> @Html.DisplayFor(m => m.Data.Doctor.PhoneNumber)
+            </div>
+            <div class="col-md-6">
+                <b>Specialities:</b> @string.Join(", ", @String.Join(", ", Model?.Data.Doctor.DoctorSpecialities))
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-md-6">
+                <b>Appointment Status:</b>
+                <span class="badge @(Model.Data.AppointmentStatus == HMS.Models.Enums.AppointmentStatus.Pending ? "bg-warning" :
+                                                          Model.Data.AppointmentStatus == HMS.Models.Enums.AppointmentStatus.Accepted ? "bg-success" :
+                                                          "bg-danger")">
+                    @Model.Data.AppointmentStatus
+                </span>
+            </div>
+            <div class="col-md-6 text-end">
+                <b>Date Created:</b> @Model.Data.DateCreated.ToString("f")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+
+    <a asp-action="Index" asp-controller="Appointment">Back to List</a>
+</div>

@@ -1,4 +1,6 @@
-﻿using HMS.Models.Enums;
+﻿using HMS.Models.DTOs.Doctor;
+using HMS.Models.DTOs.Patients;
+using HMS.Models.Enums;
 
 namespace HMS.Models.DTOs.Appointment
 {
@@ -8,9 +10,9 @@ namespace HMS.Models.DTOs.Appointment
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public Guid PatientId { get; set; }
-        public Entities.Patient Patient { get; set; }
+        public PatientDto Patient { get; set; }
         public Guid DoctorId { get; set; }
-        public Entities.Doctor Doctor { get; set; }
+        public DoctorDto Doctor { get; set; }
 
         public string Title { get; set; }
         public string Description { get; set; }

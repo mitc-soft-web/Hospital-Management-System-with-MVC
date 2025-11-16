@@ -20,6 +20,8 @@ namespace HMS.Controllers
             _patientService = patientService;
             _appointmentService = appointmentService;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var appointments = await _appointmentService.GetAppointmentsAsync(CancellationToken.None);
@@ -27,29 +29,16 @@ namespace HMS.Controllers
             return View(appointments);
         }
 
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var doctors = await _doctorService.GetDotorsAsync(CancellationToken.None);
-            if (!doctors.Status)
-            {
-                return View();
-            }
-            else
-            {
-                ViewData["Doctors"] = new SelectList(doctors.Data, "Id", "FullName");
-            }
-            
+            ViewData["Doctors"] = new SelectList(doctors.Data, "Id", "FullName");
+
             var patients = await _patientService.GetPatientsAsync(CancellationToken.None);
-            if(!patients.Status)
-            {
-                return View();
-            }
-            else
-            {
-                ViewData["Patients"] = new SelectList(patients.Data, "Id", "FullName");
-            }
+            ViewData["Patients"] = new SelectList(patients.Data, "Id", "FullName");
             return View();
         }
 
@@ -67,6 +56,36 @@ namespace HMS.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet("ViewAppointmentDetails/{id}")]
+        [Authorize(Roles = "Admin, Doctor")]
+        public async Task<IActionResult> ViewAppointmentDetails(Guid id)
+        {
+            var appointment = await _appointmentService.GetByIdAsync(id, CancellationToken.None);
+
+            Console.WriteLine("Medical No: " + appointment.Data.Patient.MedicalRecordNumber);
+
+            //if (!appointment.Status)
+            //{
+            //    ViewBag.Error = appointment.Status;
+            //}
+
+            return View(appointment);
+        }
+
+        [HttpGet("Accept/{id}")]
+        [Authorize(Roles = "Admin, Doctor")]
+        public async Task<IActionResult> Accept(Guid id)
+        {
+            var appointment = await _appointmentService.AcceptAppointment(id);
+
+            //if (!appointment.Status)
+            //{
+            //    ViewBag.Error = appointment.Status;
+            //}
+
+            return RedirectToAction("ViewAppointmentDetails");
         }
     }
 }

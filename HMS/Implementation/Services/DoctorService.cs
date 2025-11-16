@@ -108,6 +108,8 @@ namespace HMS.Implementation.Services
                         {
                             SpecialityId = specialityId,
                         };
+
+                        doctor.DoctorSpecialities.Add(doctorSpeciality);
                     }
 
                     await _doctorRepository.Add(doctor);
