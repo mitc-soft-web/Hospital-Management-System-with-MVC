@@ -102,7 +102,7 @@ namespace HMS.Persistence.Context
             base.OnModelCreating(builder);
         }
 
-        private void SeedAdminData(ModelBuilder modelBuilder)
+        private static void SeedAdminData(ModelBuilder modelBuilder)
         {
             //var adminRoleId = Guid.NewGuid();
             //var adminUserId = Guid.NewGuid();

@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Npgsql;
-using System.Text;
+using FluentValidation;
+using HMS.Models.DTOs.Doctor;
+using HMS.Models.DTOs.Doctor.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +45,10 @@ builder.Services.AddDbContext<HmsContext>(options =>
         new MySqlServerVersion(new Version(9, 0, 0))
     ));
 
+builder.Services.AddValidatorsFromAssemblyContaining<CreateDoctorValidation>();
 
+
+//builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 //var connectionString = builder.Configuration.GetConnectionString("HmsConnection");
 
 // Just in case you want to use an env var later, keep this logic flexible
